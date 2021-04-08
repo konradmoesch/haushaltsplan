@@ -3,3 +3,11 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+  p Logged in as #{user.fullname} (#{user.username})
+  p #{user.email}
+  if user.admin==='1'
+    p Du bist ein Admin
+
+  br
+  a(href='/login/logout') Ausloggen
+  a(href='/login/') Ändern

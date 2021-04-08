@@ -1,0 +1,22 @@
+doctype html
+html
+    head
+        title= title
+    body
+        div#signup
+            label(for='username') Username
+            input#username(name='username' type='text' value=user.username)
+            br
+            label(for='fullname') Fullname
+            input#fullname(name='fullname' type='text' value=user.fullname)
+            br
+            label(for='email') Email Address
+            input#email(name='email' type='email' value=user.email)
+            br
+            label(for='admin') Admin?
+            input#admin(name='admin' type='checkbox' value="1" checked=user.admin)
+            br
+            button#editUserBtn.btn 'Save'
+    script(src='/libraries/js/jquery-3.6.0.min.js')
+    script(src='/javascripts/main.js')
+    script(src='/javascripts/useredit.js')

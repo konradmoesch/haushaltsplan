@@ -1,27 +1,79 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const passport = require('passport');
+const session = require('express-session');
+const logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/api/users');
+const loginRouter = require('./routes/login');
 
-var app = express();
+const sessionConf = require('./config/session.json');
+const sqlSessionStore = require('express-mysql-session')(session)
+const con = require('./routes/helpers/db');
+const app = express();
 app.disable("x-powered-by");
+let isAuthenticated = function (req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  if (req.originalUrl.split('/')[1] === 'api' || req.xhr) {
+    res.sendStatus(401);
+  } else {
+    res.redirect('/login');
+  }
+};
+require('run-middleware')(app);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// Passport
+const sessionStore = new sqlSessionStore({
+  //checkExpirationInterval: sessionConf.timeout / 4,
+  //expiration: sessionConf.timeout,
+  createDatabaseTable: true,
+  schema: {
+    tableName: 'sessions',
+    columnNames: {
+      session_id: 'sid',
+      expires: 'expires',
+      data: 'data'
+    }
+  }
+}, con);
+app.use(session(
+    {
+      name: sessionConf.name,
+      secret: sessionConf.secret,
+      resave: true,
+      rolling: true,
+      saveUninitialized: false,
+      ephemeral: true,
+      store: sessionStore,
+      cookie: {
+        path: '/',
+        //domain: sessionConf.domain,
+        httpOnly: true,
+        //secure: true,
+        secure: false,
+        sameSite: 'strict',
+        //maxAge: sessionConf.timeout
+      }
+    }
+));
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+
+app.use('/login', loginRouter);
+app.use('/api/users', usersRouter);
+app.use('/', isAuthenticated, indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

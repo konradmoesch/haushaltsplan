@@ -1,0 +1,25 @@
+doctype html
+html
+    head
+        title= title
+    body
+        div#signup
+            label(for='username') Username
+            input#username(name='username' type='text')
+            br
+            label(for='fullname') Fullname
+            input#fullname(name='fullname' type='text')
+            br
+            label(for='email') Email Address
+            input#email(name='email' type='email')
+            br
+            label(for='admin') Admin?
+            input#admin(name='admin' type='checkbox', value="1")
+            br
+            label(for='password') Password
+            input#password(name='password' type='password')
+            br
+            button#addUserBtn.btn 'Sign Up'
+    script(src='/libraries/js/jquery-3.6.0.min.js')
+    script(src='/javascripts/main.js')
+    script(src='/javascripts/usercreate.js')

@@ -6,11 +6,18 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.5",
+    "bcrypt-nodejs": "0.0.3",
     "debug": "~4.3.1",
     "express": "~4.17.1",
+    "express-mysql-session": "^2.1.5",
+    "express-session": "^1.17.1",
+    "fomantic-ui": "^2.8.7",
     "http-errors": "~1.8.0",
     "morgan": "~1.10.0",
-    "pug": "3.0.2"
+    "mysql": "^2.18.1",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "pug": "3.0.2",
+    "run-middleware": "^0.9.10"
   }
 }

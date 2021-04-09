@@ -109,3 +109,4 @@ dist
 # Editor-based HTTP Client requests
 /httpRequests/
 .scannerwork/
+config/

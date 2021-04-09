@@ -1,0 +1,44 @@
+extends layout
+
+block content
+    h1.ui.header= title
+    h2 Nutzerdaten ändern
+    .ui.form#formEdit
+        .field
+            label Nutzername
+            input#inputUsername(type="text" name="username" placeholder="Nutzername" value=user.username)
+        .field
+            label Anzeigename
+            input#inputFullname(type="text" name="fullname" placeholder="Anzeigename" value=user.fullname)
+        .field
+            label Email
+            input#inputEmail(type="email" name="email" placeholder="Email" value=user.email)
+        .inline.field
+            .ui.toggle.checkbox
+                if user.admin
+                    input#inputAdmin(type="checkbox" tabindex="0" class="hidden" checked)
+                else
+                    input#inputAdmin(type="checkbox" tabindex="0" class="hidden")
+                label Admin?
+        #formEditMessage
+        button#btnEditUserdata(class="ui button" type="submit") Speichern
+    h2 Passwort ändern
+    .ui.form#formPassword
+        .field
+            label aktuelles Passwort
+            input#inputCurrentPassword(type="password" name="currentpw" placeholder="aktuelles Passwort")
+        .field
+            label neues Passwort
+            input#inputNewPassword(type="password" name="newpw" placeholder="neues Passwort")
+        .field
+            label Passwort bestätigen
+            input#inputRepeatPassword(type="password" name="newpw2" placeholder="Passwort bestätigen")
+        #formPasswordMessage
+        button#btnChangePassword(class="ui button" type="submit") Passwort ändern
+    br
+    a(href='/login/logout') Ausloggen
+    script.
+        userID = #{user.id}
+
+    script(src='javascripts/profile.js')
+

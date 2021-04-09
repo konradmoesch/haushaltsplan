@@ -1,6 +1,6 @@
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt-nodejs');
-con = require('./db');
+const con = require('./db');
 
 function logLogin(userID, authOk, clientInfo) {
     con.query('INSERT INTO users_login_history (userID, authOk, `client`) VALUES (?, ?, ?)', [userID, authOk, clientInfo]);
@@ -11,7 +11,8 @@ module.exports = function (passport) {
         done(null, user.id);
     });
     passport.deserializeUser(function (id, done) {
-        con.query('SELECT id, username, fullname, email FROM users WHERE id = ?', [id], function (err, rows) {
+        //TODO: which rows are necessary
+        con.query('SELECT id, username, fullname, email, admin, lastPwChange FROM users WHERE id = ?', [id], function (err, rows) {
             done(err, rows[0]);
         });
     });

@@ -8,17 +8,14 @@ router.get('/', function (req, res) {
 router.get('/signup/', function (req, res) {
     res.render('signup', {title: 'Nutzererstellung'});
 });
-router.get('/edit/', function (req, res) {
-    res.render('edituser', {title: 'Nutzer ändern', user: req.user});
-});
 router.post('/', function (req, res) {
     passport.authenticate('local-login', null ,function (err, user) {
-        req.logIn(user, function () {
-        });
         if (err) {
             res.status(500).send(JSON.stringify({'status': 200, 'error': 'Datenbankfehler. Bitte kontaktieren Sie einen Serveradministrator. ', 'response': false}));
         } else if (user) {
-            res.status(200).send(JSON.stringify({'status': 200, 'error': null, 'response': true}));
+            req.logIn(user, function () {
+                res.status(200).send(JSON.stringify({'status': 200, 'error': null, 'response': true}));
+            });
         } else {
             res.status(401).send(JSON.stringify({'status': 401, 'error': 'Zugangsdaten unbekannt.', 'response': null}));
         }

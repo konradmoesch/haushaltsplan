@@ -1,13 +1,12 @@
 extends layout
 
 block content
-  h1= title
+  h1.ui.header= title
   p Welcome to #{title}
   p Logged in as #{user.fullname} (#{user.username})
   p #{user.email}
-  if user.admin==='1'
+  if user.admin===1
     p Du bist ein Admin
 
   br
   a(href='/login/logout') Ausloggen
-  a(href='/login/') Ändern

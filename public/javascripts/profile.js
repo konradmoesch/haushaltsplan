@@ -27,7 +27,7 @@ $('#btnEditUserdata').on('click', function () {
     let email = $('#inputEmail').val();
     let admin = $('#inputAdmin').prop('checked')?1:0;
     let disabled = 0;
-    if (username !== '' && fullname !== '' && email !== '' && admin !== '') {
+    if (username !== '' && fullname !== '' && email !== '') {
         doAJAX('put', '/api/users/' + userID + '/', {
             username,
             fullname,

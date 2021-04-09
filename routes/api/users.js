@@ -112,7 +112,7 @@ router.route('/:id/password')
         } else {
             con.query('SELECT password FROM users WHERE id = ? LIMIT 1;', [request.params.id], function (queryErr, queryRes) {
                 if (queryErr) {
-                    sendRes(response, 500, null, 'an error occurred', queryErr);
+                    sendRes(response, 500, null, queryErr);
                 } else if (bcrypt.compareSync(request.body.currentPassword, queryRes[0].password)) {
                     con.query('UPDATE users SET password = ?, lastPwChange = NOW() WHERE id = ? LIMIT 1;', [bcrypt.hashSync(request.body.newPassword), request.params.id], function (queryErr, queryRes) {
                         if (queryErr) {

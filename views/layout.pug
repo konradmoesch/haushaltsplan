@@ -25,9 +25,9 @@ html(lang='de')
     meta(name="theme-color" content="#ffffff")
 
     script(src='/libraries/js/jquery-3.6.0.min.js')
-    script(src='/libraries/js/moment-with-locales.js')
     script(src='/libraries/DataTables/datatables.min.js')
     script(src='/libraries/js/fa-all.min.js')
+    script(src='/libraries/js/chart.min.js')
     script(src='/semantic/semantic.min.js')
     script(src='/javascripts/main.js')
 
@@ -38,6 +38,7 @@ html(lang='de')
           img.logo(src='images/logo.png')
           | Haushaltsplan
         a.item(href='/') Home
+        a.item(href='/expenses') Ausgaben
         a.item(href='/profile') Profil
         .ui.simple.dropdown.item
           | Dropdown
@@ -54,7 +55,7 @@ html(lang='de')
                 a.item(href='#') Link Item
                 a.item(href='#') Link Item
             a.item(href='#') Link Item
-    .ui.main.text.container
+    .ui.main.container
       block content
     .ui.inverted.vertical.footer.segment
       .ui.center.aligned.container
@@ -81,9 +82,13 @@ html(lang='de')
               a.item(href='#') Link Three
               a.item(href='#') Link Four
           .seven.wide.column
-            h4.ui.inverted.header Footer Header
-            p
-              | Extra space for a call to action inside the footer that could help re-engage users.
+            h4.ui.inverted.header Haushaltsplan
+            p &copy; Konrad Mösch 2021
+              br
+              | v#{version}
+              br
+              | Kontakt:&nbsp;
+              a(href='mailto:konrad@moesch.org') konrad@moesch.org
         .ui.inverted.section.divider
         img.ui.centered.mini.image(src='images/logo.png')
         .ui.horizontal.inverted.small.divided.link.list

@@ -7,6 +7,7 @@ const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/api/users');
+const expensesRouter = require('./routes/api/expenses');
 const loginRouter = require('./routes/login');
 
 const sessionConf = require('./config/session.json');
@@ -31,7 +32,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Passport
@@ -59,12 +60,12 @@ app.use(session(
       store: sessionStore,
       cookie: {
         path: '/',
-        //domain: sessionConf.domain,
+        domain: sessionConf.domain,
         httpOnly: true,
         //secure: true,
         secure: false,
         sameSite: 'strict',
-        //maxAge: sessionConf.timeout
+        maxAge: sessionConf.timeout
       }
     }
 ));
@@ -72,11 +73,13 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(function (req, res, next){
     res.locals.user = req.user;
+    res.locals.version = require('./package.json').version;
     next();
 });
 
 app.use('/login', loginRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/expenses', expensesRouter);
 app.use('/', isAuthenticated, indexRouter);
 
 // catch 404 and forward to error handler

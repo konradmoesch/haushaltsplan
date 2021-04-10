@@ -41,11 +41,12 @@ function showToast(vType, vText, vError = '') {
     });
 }
 
-/*
 //datatable defaults
 $.extend(true, $.fn.DataTable.defaults, {
     destroy: true,
     language: {
+        'decimal': ',',
+        'thousands': '.',
         'sEmptyTable': 'Keine Daten in der Tabelle vorhanden',
         'sInfo': 'Zeige <strong>_START_</strong> bis <strong>_END_</strong> von ingesamt <strong>_TOTAL_</strong> Einträgen',
         'sInfoEmpty': 'keine Einträge',
@@ -64,19 +65,20 @@ $.extend(true, $.fn.DataTable.defaults, {
         }
     },
     paginate: true,
-    dom: '<"top"<"ui grid"<"two wide column"B><"three wide column"l><"eight wide column"p><"three wide column"f>><"clear">>rt<"bottom"<"ui grid"<"eight wide column"i><"eight wide column"p>><"clear">>',
+    //dom: '<"top"<"ui grid"<"two wide column"B><"three wide column"l><"eight wide column"p><"three wide column"f>><"clear">>rt<"bottom"<"ui grid"<"eight wide column"i><"eight wide column"p>><"clear">>',
+    dom: '<"top"<"ui grid"<"three wide column"B><"four wide column"l><"eight wide column"p>><"clear">>rt<"bottom"<"ui grid"<"eight wide column"i><"eight wide column"p>><"clear">>',
     buttons: [
         {
             text: '<i class="sync icon"></i>',
             action(e, dt) {
                 dt.ajax.reload();
             }
-        },
+        /*},
         {
             text: '<i class="hashtag icon"></i>',
             action(e, dt) {
                 (dt.columns().visible()[0] === true ? dt.columns(0).visible(false) : dt.columns(0).visible(true));
-            }
+            }*/
         }
     ]
 });
@@ -116,19 +118,8 @@ function reloadDT(table) {
     $(table).DataTable().ajax.reload();
 }
 
-function dtAddSearch(table) {
-    table.columns().every(function () {
-        let that = this;
-        $('input', this.footer()).on('keyup change', function () {
-            if (that.search() !== this.value) {
-                that.search(this.value).draw();
-            }
-        });
-    });
-}
-
 //get URL parameter
 function getParameterByName(name) {
     let url = new URL(location.href);
     return url.searchParams.get(name);
-}*/
+}

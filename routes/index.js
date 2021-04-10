@@ -27,5 +27,8 @@ router.get('/', function(req, res, next) {
 router.get('/profile', function(req, res, next) {
   res.render('profile', {title: 'Profilseite'});
 });
+router.get('/expenses', function(req, res, next) {
+  res.render('expenses', {title: 'Ausgaben'});
+});
 
 module.exports = router;

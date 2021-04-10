@@ -1,0 +1,86 @@
+extends layout
+
+block content
+    h1.ui.header= title
+    .ui.grid
+        .row
+            .column
+                canvas#myChart(style='width:40px')
+        .row
+            .column
+                .ui.form
+                    .fields
+                        .field
+                            label Startdatum
+                            .ui.calendar#rangestart
+                                .ui.input.left.icon
+                                    i.calendar.icon
+                                    input#datepickerStart(type='text' placeholder='Startdatum' name='dateStart')
+                        .field
+                            label Enddatum
+                            .ui.calendar#rangeend
+                                .ui.input.left.icon
+                                    i.calendar.icon
+                                    input#datepickerEnd(type='text' placeholder='Enddatum' name='dateEnd')
+        .three.column.centered.row
+            .column
+                h2 Ladenausgaben
+                table#table_store_expenses.ui.table.showPointer
+                    thead
+                        tr
+                            th(style="width:40%;") Produkt
+                            th(style="width:40%;") Ort
+                            th(style="width:10%;") Datum
+                            th(style="width:10%;") Betrag
+            .column
+                h2 Wiederkehrende Ausgaben
+                table#table_recurring_expenses.ui.table.showPointer
+                    thead
+                        tr
+                            th(style="width:40%;") Produkt
+                            th(style="width:40%;") Ort
+                            th(style="width:10%;") Datum
+                            th(style="width:10%;") Betrag
+            .column
+                h2 Onlineausgaben
+                table#table_online_expenses.ui.table.showPointer
+                    thead
+                        tr
+                            th(style="width:40%;") Produkt
+                            th(style="width:40%;") Ort
+                            th(style="width:10%;") Datum
+                            th(style="width:10%;") Betrag
+        .row
+            .column
+                .ui.form
+                    h2.ui.dividing.header Hinzufügen
+                    .fields
+                        .field
+                            label Kategorie
+                            select.ui.fluid.dropdown.selection#selectCategory
+                                option(value='') Kategorie
+                                option(value='0') Ladenausgaben
+                                option(value='1') Wiederkehrende Ausgaben
+                                option(value='2') Onlineausgaben
+                        .field
+                            label Produkt
+                            input#inputProduct(type='text' name='product' placeholder='Produkt')
+                        .field
+                            label Ort
+                            input#inputPlace(type='text' name='place' placeholder='Ort')
+                        .field
+                            label Datum
+                            .ui.calendar#selectDate
+                                .ui.input.left.icon
+                                    i.calendar.icon
+                                    input#inputDate(type="text" placeholder="Datum" name="date")
+                        .field
+                            label Betrag
+                            input#inputValue(type='number' name='product' placeholder='Wert')
+                    button#btnAddExpense(class="ui button submit") Hinzufügen
+
+    script.
+        userID = #{user.id}
+
+    script(src='javascripts/expenses.js')
+

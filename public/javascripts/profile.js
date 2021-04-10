@@ -1,5 +1,27 @@
+function showToast(state, title, message) {
+    $('body')
+        .toast({
+            class: state,
+            title: title,
+            message: message,
+            showProgress: 'bottom'
+        })
+    ;
+}
+
 $('.ui.checkbox')
     .checkbox()
+;
+
+$('#formEdit')
+    .form({
+        on: 'submit',
+        fields: {
+            fullname: 'empty',
+            username: 'empty',
+            email: 'email'
+        }
+    })
 ;
 
 function showOutput(formid, status, message) {
@@ -35,16 +57,27 @@ $('#btnEditUserdata').on('click', function () {
             admin,
             disabled
         }).done(function (data) {
-            showOutput('formEdit', 'success', data.response);
+            showToast('success', 'Erfolg', data.response);
             //setTimeout(location.reload.bind(location), 1200);
         }).fail(function (xhr) {
             let data = xhr.responseJSON;
-            showOutput('formEdit', 'error', data.error);
+            showToast('error', null, data.error);
         });
     } else {
-        //showToast('error', 'Bitte füllen Sie alle Felder aus.');
+        showToast('error', null, 'Bitte füllen Sie alle Felder aus.');
     }
 });
+
+$('#formPassword')
+    .form({
+        on: 'submit',
+        fields: {
+            currentpw: 'empty',
+            newpw: 'empty',
+            newpw2: ['empty', 'match[newPw]']
+        }
+    })
+;
 
 $('#btnChangePassword').on('click', function () {
     const fieldCurrentPassword = $('#inputCurrentPassword');
@@ -53,17 +86,13 @@ $('#btnChangePassword').on('click', function () {
     let currentPassword = fieldCurrentPassword.val();
     let newPassword = fieldNewPassword.val();
     let newPassword2 = fieldRepeatPassword.val();
-    //reset form errors
-    fieldCurrentPassword.parent().removeClass('error');
-    fieldNewPassword.parent().removeClass('error');
-    fieldRepeatPassword.parent().removeClass('error');
 
     if (currentPassword !== '' && newPassword !== '' && newPassword2 !== '' && newPassword === newPassword2) {
         doAJAX('put', '/api/users/' + userID + '/password/', {
             currentPassword,
             newPassword
         }).done(function (data) {
-            showOutput('formPassword', 'success', data.response);
+            showToast('success', null, data.response);
             //setTimeout(location.reload.bind(location), 1200);
         }).fail(function (xhr) {
             let data = xhr.responseJSON;
@@ -79,10 +108,8 @@ $('#btnChangePassword').on('click', function () {
             }
         });
     } else if (newPassword !== newPassword2){
-        fieldNewPassword.parent().addClass('error');
-        fieldRepeatPassword.parent().addClass('error');
-        showOutput('formPassword', 'error', 'Die Passwörter stimmen nicht überein.');
+        showToast('error', null, 'Die Passwörter stimmen nicht überein.');
     } else {
-        //showToast('error', 'Bitte füllen Sie alle Felder aus.');
+        showToast('error', null, 'Bitte füllen Sie alle Felder aus.');
     }
 });

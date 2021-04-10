@@ -20,8 +20,7 @@ block content
                 else
                     input#inputAdmin(type="checkbox" tabindex="0" class="hidden")
                 label Admin?
-        #formEditMessage
-        button#btnEditUserdata(class="ui button" type="submit") Speichern
+        button#btnEditUserdata(class="ui button submit") Speichern
     h2 Passwort ändern
     .ui.form#formPassword
         .field
@@ -33,8 +32,9 @@ block content
         .field
             label Passwort bestätigen
             input#inputRepeatPassword(type="password" name="newpw2" placeholder="Passwort bestätigen")
+            //.ui.basic.red.pointing.prompt.label.transition.hidden(style="display: inline-block !important;") Die Passwörter stimmen nicht überein
         #formPasswordMessage
-        button#btnChangePassword(class="ui button" type="submit") Passwort ändern
+        button#btnChangePassword(class="ui button submit") Passwort ändern
     br
     a(href='/login/logout') Ausloggen
     script.

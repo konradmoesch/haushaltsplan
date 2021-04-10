@@ -3,10 +3,27 @@ extends layout
 block content
   h1.ui.header= title
   p Welcome to #{title}
+  - var pwAge = Math.round((new Date()-new Date(user.lastPwChange))/1000/60/60/24/7/4);
+  if(pwAge >= 2)
+    .ui.message.orange
+      p: strong Ihr Passwort wurde schon länger nicht mehr geändert. Aus Sicherheitsgründen sollten Sie <a href="/profile">hier</a> ein neues Passwort vergeben.
   p Logged in as #{user.fullname} (#{user.username})
   p #{user.email}
   if user.admin===1
     p Du bist ein Admin
+  h3 Hier kommen Diagramme hin
+
+  .six.wide.column
+    .four.wide.column
+      .ui.comments
+        h3.ui.dividing.header Programm-Feedback
+        .ui.reply.form
+          .field
+            textarea#newFeedbackMsg(placeholder="Anregungen, Probleme oder Wünsche (max. 1000 Zeichen)", maxlength='1000')
+          .ui.blue.labeled.icon.button#sendFeedback
+            i.icon.comment
+            | Feedback senden
 
   br
+  script(src='/javascripts/index.js')
   a(href='/login/logout') Ausloggen

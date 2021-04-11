@@ -64,6 +64,20 @@ router.route('/:id/sum')
             });
         }
     });
+router.route('/:id/sumall')
+    .get(ajaxOnly, function (request, response) {
+        if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {
+            sendRes(response, 422, null, 'Beim Abrufen dieser Daten ist ein Fehler aufgetreten')
+        } else {
+            con.query('SELECT SUM(value) AS sum FROM expenses WHERE userid=? AND date<=? AND date>=?;', [request.params.id, request.query.lastdate, request.query.firstdate, request.params.id, request.query.lastdate, request.query.firstdate, request.params.id, request.query.lastdate, request.query.firstdate], function (queryErr, queryRes) {
+                if (queryErr) {
+                    sendRes(response, 500, null, queryErr);
+                } else {
+                    sendRes(response, 200, queryRes);
+                }
+            });
+        }
+    });
 router.route('/:id/days')
     .get(ajaxOnly, function (request, response) {
         if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {

@@ -1,0 +1,44 @@
+extends layout
+
+block content
+    h1.ui.header= title
+    .ui.form
+        .fields
+            .field
+                label Startdatum
+                .ui.calendar#rangestart
+                    .ui.input.left.icon
+                        i.calendar.icon
+                        input#datepickerStart(type='text' placeholder='Startdatum' name='dateStart')
+            .field
+                label Enddatum
+                .ui.calendar#rangeend
+                    .ui.input.left.icon
+                        i.calendar.icon
+                        input#datepickerEnd(type='text' placeholder='Enddatum' name='dateEnd')
+
+    canvas#barChart
+
+    .center
+        .ui.three.statistics
+            .green.statistic
+                .value#statEarnings
+                    | +22 €
+                .label
+                    | Einnahmen
+            .red.statistic
+                .value#statExpenses
+                    | -11 €
+                .label
+                    | Ausgaben
+            .statistic
+                .value#statBalance
+                    | 11 €
+                .label
+                    | Bilanz
+
+    script.
+        userID = #{user.id}
+
+    script(src='javascripts/balance.js')
+

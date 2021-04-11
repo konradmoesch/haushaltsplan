@@ -9,6 +9,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/api/users');
 const expensesRouter = require('./routes/api/expenses');
 const earningsRouter = require('./routes/api/earnings');
+const balanceRouter = require('./routes/api/balance');
 const loginRouter = require('./routes/login');
 
 const sessionConf = require('./config/session.json');
@@ -82,6 +83,7 @@ app.use('/login', loginRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/expenses', expensesRouter);
 app.use('/api/earnings', earningsRouter);
+app.use('/api/balance', balanceRouter);
 app.use('/', isAuthenticated, indexRouter);
 
 // catch 404 and forward to error handler

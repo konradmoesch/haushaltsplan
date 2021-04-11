@@ -40,7 +40,7 @@ function loadCharts() {
     //Charts
     let ctx = $('#barChart');
     doAJAX('get', '/api/expenses/' + userID + '/sum/',{firstdate: formatDateYYYYMMDD($('#datepickerStart').val()), lastdate: formatDateYYYYMMDD($('#datepickerEnd').val()) }).done(function (data) {
-        let myChart = new Chart(ctx, {
+        new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: ['Lokal', 'Wiederkehrend', 'Online'],

@@ -12,15 +12,15 @@ $('#addUserBtn').on('click', function () {
             admin,
             password
         }).done(function (data) {
-            //showToast('success', data.response);
+            showToast('success', null, data.response);
             console.log('success');
             setTimeout(location.reload.bind(location), 1200);
         }).fail(function (xhr) {
             let data = xhr.responseJSON;
             console.error(data.errorCode + ":" + data.error);
-            //showToast('error', data.error, data.errorCode);
+            showToast('error', 'Fehler (' + data.errorCode + ')', data.error);
         });
     } else {
-        //showToast('error', 'Bitte füllen Sie alle Felder aus.');
+        showToast('error', null, 'Bitte füllen Sie alle Felder aus.');
     }
 });

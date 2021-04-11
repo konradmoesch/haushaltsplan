@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    // form validation
     $('.ui.form').form({
         fields: {
             username: {
@@ -22,6 +23,8 @@ $(document).ready(function() {
         }
     });
 });
+
+// login function
 function login() {
     let username = $('#login-username'), pw = $('#login-password');
     if (pw.val().trim() === '' || username.val().trim() === '') {
@@ -43,6 +46,7 @@ function login() {
     }
 }
 
+// animation & enter key hook
 $(function () {
     $(".login-form").animate({left: '60%'}, 'slow');
     $('#login-submit').on('click', function () {

@@ -41,7 +41,7 @@ function setDatesOnPickers() {
 function loadCharts() {
     let ctx = $('#myChart');
     doAJAX('get', '/api/earnings/' + userID + '/sum/',{firstdate: formatDateYYYYMMDD($('#datepickerStart').val()), lastdate: formatDateYYYYMMDD($('#datepickerEnd').val()) }).done(function (data) {
-        let myChart = new Chart(ctx, {
+        new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: ['Wiederkehrend', 'Sonstige'],
@@ -73,7 +73,7 @@ function loadCharts() {
 
     let ctx2 = $('#myChart2');
     doAJAX('get', '/api/earnings/' + userID + '/days/',{firstdate: formatDateYYYYMMDD($('#datepickerStart').val()), lastdate: formatDateYYYYMMDD($('#datepickerEnd').val()) }).done(function (data) {
-        let myChart = new Chart(ctx2, {
+        new Chart(ctx2, {
             type: 'doughnut',
             data: {
                 labels: ['Wiederkehrend', 'Sonstige'],
@@ -105,7 +105,8 @@ function loadCharts() {
 }
 
 function loadDT() {
-    let tableRecurringEarnings = $('#table_recurring_earnings').DataTable({
+    //recurring earnings table
+    $('#table_recurring_earnings').DataTable({
         columns: [
             {data: 'name'},
             {
@@ -130,7 +131,8 @@ function loadDT() {
         "searching": false,
         order: [[1, 'asc']]
     });
-    let tableOtherEarnings = $('#table_other_earnings').DataTable({
+    //other earnings table
+    $('#table_other_earnings').DataTable({
         columns: [
             {data: 'name'},
             {

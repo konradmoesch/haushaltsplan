@@ -1,3 +1,4 @@
+//TODO: aufräumen
 $.ajaxSetup({
     statusCode: {
         401: () => window.top.location.href = '/login'

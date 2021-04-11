@@ -42,7 +42,7 @@ function loadCharts() {
     //Charts
     let ctx = $('#myChart');
     doAJAX('get', '/api/expenses/' + userID + '/sum/',{firstdate: formatDateYYYYMMDD($('#datepickerStart').val()), lastdate: formatDateYYYYMMDD($('#datepickerEnd').val()) }).done(function (data) {
-        let myChart = new Chart(ctx, {
+        new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: ['Lokal', 'Wiederkehrend', 'Online'],
@@ -76,7 +76,7 @@ function loadCharts() {
 
     let ctx2 = $('#myChart2');
     doAJAX('get', '/api/expenses/' + userID + '/days/',{firstdate: formatDateYYYYMMDD($('#datepickerStart').val()), lastdate: formatDateYYYYMMDD($('#datepickerEnd').val()) }).done(function (data) {
-        let myChart = new Chart(ctx2, {
+        new Chart(ctx2, {
             type: 'doughnut',
             data: {
                 labels: ['Lokal', 'Wiederkehrend', 'Online'],
@@ -110,7 +110,8 @@ function loadCharts() {
 }
 
 function loadDT() {
-    let tableLocalExpenses = $('#table_store_expenses').DataTable({
+    //local store expenses table
+    $('#table_store_expenses').DataTable({
         columns: [
             {data: 'name'},
             {data: 'place'},
@@ -136,7 +137,8 @@ function loadDT() {
         "searching": false,
         order: [[1, 'asc']]
     });
-    let tableRecurringExpenses = $('#table_recurring_expenses').DataTable({
+    //recurring expenses table
+    $('#table_recurring_expenses').DataTable({
         columns: [
             {data: 'name'},
             {data: 'place'},
@@ -162,7 +164,8 @@ function loadDT() {
         "searching": false,
         order: [[1, 'asc']]
     });
-    let tableOnlineExpenses = $('#table_online_expenses').DataTable({
+    //online expenses table
+    $('#table_online_expenses').DataTable({
         columns: [
             {data: 'name'},
             {data: 'place'},

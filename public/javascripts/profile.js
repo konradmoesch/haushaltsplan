@@ -23,6 +23,7 @@ $(document).ready(function () {
         });
 });
 
+//form output
 function showOutput(formid, status, message) {
     let form = $('#'+formid);
     let messageField = $('#'+formid+'Message');

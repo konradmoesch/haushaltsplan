@@ -1,17 +1,27 @@
-$('.ui.checkbox')
-    .checkbox()
-;
-
-$('#formEdit')
-    .form({
-        on: 'submit',
-        fields: {
-            fullname: 'empty',
-            username: 'empty',
-            email: 'email'
-        }
-    })
-;
+$(document).ready(function () {
+    //create checkboxes
+    $('.ui.checkbox')
+        .checkbox();
+    //form validations
+    $('#formEdit')
+        .form({
+            on: 'submit',
+            fields: {
+                fullname: 'empty',
+                username: 'empty',
+                email: 'email'
+            }
+        });
+    $('#formPassword')
+        .form({
+            on: 'submit',
+            fields: {
+                currentpw: 'empty',
+                newpw: 'empty',
+                newpw2: ['empty', 'match[newPw]']
+            }
+        });
+});
 
 function showOutput(formid, status, message) {
     let form = $('#'+formid);
@@ -55,17 +65,6 @@ $('#btnEditUserdata').on('click', function () {
         showToast('error', null, 'Bitte füllen Sie alle Felder aus.');
     }
 });
-
-$('#formPassword')
-    .form({
-        on: 'submit',
-        fields: {
-            currentpw: 'empty',
-            newpw: 'empty',
-            newpw2: ['empty', 'match[newPw]']
-        }
-    })
-;
 
 $('#btnChangePassword').on('click', function () {
     const fieldCurrentPassword = $('#inputCurrentPassword');

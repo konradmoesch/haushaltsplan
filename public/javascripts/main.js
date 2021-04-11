@@ -28,8 +28,7 @@ function showToast(state, title, message) {
             title: title,
             message: message,
             showProgress: 'bottom'
-        })
-    ;
+        });
 }
 
 function formatDateYYYYMMDD(date) {

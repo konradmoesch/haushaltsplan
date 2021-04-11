@@ -13,6 +13,14 @@ function doAJAX(vType, vUrl, vData) {
     });
 }
 
+function convertToGermanDate(date) {
+    return new Date(date).toLocaleDateString('de-DE', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
+}
+
 function showToast(vType, vText, vError = '') {
     let colorClass = '';
     let iconFa = '';

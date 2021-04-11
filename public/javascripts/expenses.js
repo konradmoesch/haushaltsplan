@@ -132,12 +132,7 @@ $(function () {
             {
                 data: 'date',
                 render: function (data, type, row) {
-                    let date = new Date(data).toLocaleDateString('de-DE', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit'
-                    });
-                    return date;
+                    return convertToGermanDate(data);
                 }
             },
             {
@@ -162,13 +157,8 @@ $(function () {
             {data: 'place'},
             {
                 data: 'date',
-                render: function (data, type, row) {
-                    let date = new Date(data).toLocaleDateString('de-DE', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit'
-                    });
-                    return date;
+                render:  function (data, type, row) {
+                    return convertToGermanDate(data);
                 }
             },
             {

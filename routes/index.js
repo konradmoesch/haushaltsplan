@@ -30,5 +30,8 @@ router.get('/profile', function(req, res, next) {
 router.get('/expenses', function(req, res, next) {
   res.render('expenses', {title: 'Ausgaben'});
 });
+router.get('/earnings', function(req, res, next) {
+  res.render('earnings', {title: 'Einnahmen'});
+});
 
 module.exports = router;

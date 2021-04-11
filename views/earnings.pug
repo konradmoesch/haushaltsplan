@@ -3,10 +3,11 @@ extends layout
 block content
     h1.ui.header= title
     .ui.grid
-        .row
+        .three.column.row
             .column
-                canvas#myChart
-                canvas#myChart2
+                canvas#myChart(style='width: 10%; height: 10%')
+            .column
+                canvas#myChart2(style='width: 10%; height: 10%')
         .row
             .column
                 .ui.form
@@ -23,33 +24,22 @@ block content
                                 .ui.input.left.icon
                                     i.calendar.icon
                                     input#datepickerEnd(type='text' placeholder='Enddatum' name='dateEnd')
-        .three.column.centered.row
+        .two.column.centered.row
             .column
-                h2 Ladenausgaben
-                table#table_store_expenses.ui.table.showPointer
+                h2 Wiederkehrende Einnahmen
+                table#table_recurring_earnings.ui.table.showPointer
                     thead
                         tr
-                            th(style="width:40%;") Produkt
-                            th(style="width:40%;") Ort
-                            th(style="width:10%;") Datum
+                            th(style="width:70%;") Name
+                            th(style="width:20%;") Datum
                             th(style="width:10%;") Betrag
             .column
-                h2 Wiederkehrende Ausgaben
-                table#table_recurring_expenses.ui.table.showPointer
+                h2 Sonstige Einnahmen
+                table#table_other_earnings.ui.table.showPointer
                     thead
                         tr
-                            th(style="width:40%;") Produkt
-                            th(style="width:40%;") Ort
-                            th(style="width:10%;") Datum
-                            th(style="width:10%;") Betrag
-            .column
-                h2 Onlineausgaben
-                table#table_online_expenses.ui.table.showPointer
-                    thead
-                        tr
-                            th(style="width:40%;") Produkt
-                            th(style="width:40%;") Ort
-                            th(style="width:10%;") Datum
+                            th(style="width:70%;") Name
+                            th(style="width:20%;") Datum
                             th(style="width:10%;") Betrag
         .row
             .column
@@ -60,15 +50,11 @@ block content
                             label Kategorie
                             select.ui.fluid.dropdown.selection#selectCategory
                                 option(value='') Kategorie
-                                option(value='0') Ladenausgaben
-                                option(value='1') Wiederkehrende Ausgaben
-                                option(value='2') Onlineausgaben
+                                option(value='0') Wiederkehrende Einnahmen
+                                option(value='1') Sonstige Einnahmen
                         .field
-                            label Produkt
-                            input#inputProduct(type='text' name='product' placeholder='Produkt')
-                        .field
-                            label Ort
-                            input#inputPlace(type='text' name='place' placeholder='Ort')
+                            label Name
+                            input#inputName(type='text' name='name' placeholder='Name')
                         .field
                             label Datum
                             .ui.calendar#selectDate
@@ -78,10 +64,10 @@ block content
                         .field
                             label Betrag
                             input#inputValue(type='number' name='product' placeholder='Wert')
-                    button#btnAddExpense(class="ui button submit") Hinzufügen
+                    button#btnAddEarning(class="ui button submit") Hinzufügen
 
     script.
         userID = #{user.id}
 
-    script(src='javascripts/expenses.js')
+    script(src='javascripts/earnings.js')
 

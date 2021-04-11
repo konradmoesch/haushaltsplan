@@ -26,9 +26,9 @@ function adminOnlyApi(req, res, next) {
 router.route('/:id')
     .get(ajaxOnly, function (request, response) {
         if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {
-            sendRes(response, 422, null, 'Beim Abrufen dieser Ausgabenliste ist ein Fehler aufgetreten')
+            sendRes(response, 422, null, 'Beim Abrufen dieser Einnahmenliste ist ein Fehler aufgetreten')
         } else {
-            con.query('SELECT id,date,name,place,value FROM expenses WHERE userid=? AND category=? AND date<=? AND date>=?;', [request.params.id, request.query.category, request.query.lastdate, request.query.firstdate], function (queryErr, queryRes) {
+            con.query('SELECT id,date,name,value FROM earnings WHERE userid=? AND category=? AND date<=? AND date>=?;', [request.params.id, request.query.category, request.query.lastdate, request.query.firstdate], function (queryErr, queryRes) {
                 if (queryErr) {
                     sendRes(response, 500, null, queryErr);
                 } else {
@@ -41,7 +41,7 @@ router.route('/:id')
         if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {
             sendRes(response, 422, null, 'Beim Ausführen dieser Abfrage ist ein Fehler aufgetreten')
         } else {
-            con.query('INSERT INTO expenses (userid, category, date, name, place, value) VALUES (?, ?, ?, ?, ?, ?);', [request.params.id, request.body.category, request.body.date, request.body.product, request.body.place, request.body.value], function (queryErr, queryRes) {
+            con.query('INSERT INTO earnings (userid, category, date, name, value) VALUES (?, ?, ?, ?, ?);', [request.params.id, request.body.category, request.body.date, request.body.name, request.body.value], function (queryErr, queryRes) {
                 if (queryErr) {
                     sendRes(response, 500, null, queryErr);
                 } else {
@@ -55,7 +55,7 @@ router.route('/:id/sum')
         if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {
             sendRes(response, 422, null, 'Beim Abrufen dieser Daten ist ein Fehler aufgetreten')
         } else {
-            con.query('SELECT(SELECT SUM(value) FROM expenses WHERE userid=? AND category=0 AND date<=? AND date>=?) AS sumLocal, (SELECT SUM(value) FROM expenses WHERE userid=? AND category=1 AND date<=? AND date>=?) AS sumRecurring, (SELECT SUM(value) FROM expenses WHERE userid=? AND category=2 AND date<=? AND date>=?) AS sumOnline;', [request.params.id, request.query.lastdate, request.query.firstdate, request.params.id, request.query.lastdate, request.query.firstdate, request.params.id, request.query.lastdate, request.query.firstdate], function (queryErr, queryRes) {
+            con.query('SELECT(SELECT SUM(value) FROM earnings WHERE userid=? AND category=0 AND date<=? AND date>=?) AS sumRecurring, (SELECT SUM(value) FROM earnings WHERE userid=? AND category=1 AND date<=? AND date>=?) AS sumOther;', [request.params.id, request.query.lastdate, request.query.firstdate, request.params.id, request.query.lastdate, request.query.firstdate], function (queryErr, queryRes) {
                 if (queryErr) {
                     sendRes(response, 500, null, queryErr);
                 } else {
@@ -69,7 +69,7 @@ router.route('/:id/days')
         if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {
             sendRes(response, 422, null, 'Beim Abrufen dieser Daten ist ein Fehler aufgetreten')
         } else {
-            con.query('SELECT DAY(date) AS day, SUM(value) AS sum FROM expenses WHERE userid=? AND date<=? AND date>=? GROUP BY date;', [request.params.id, request.query.lastdate, request.query.firstdate], function (queryErr, queryRes) {
+            con.query('SELECT DAY(date) AS day, SUM(value) AS sum FROM earnings WHERE userid=? AND date<=? AND date>=? GROUP BY date;', [request.params.id, request.query.lastdate, request.query.firstdate], function (queryErr, queryRes) {
                 if (queryErr) {
                     sendRes(response, 500, null, queryErr);
                 } else {

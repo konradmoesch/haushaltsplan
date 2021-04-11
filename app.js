@@ -8,6 +8,7 @@ const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/api/users');
 const expensesRouter = require('./routes/api/expenses');
+const earningsRouter = require('./routes/api/earnings');
 const loginRouter = require('./routes/login');
 
 const sessionConf = require('./config/session.json');
@@ -80,6 +81,7 @@ app.use(function (req, res, next){
 app.use('/login', loginRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/expenses', expensesRouter);
+app.use('/api/earnings', earningsRouter);
 app.use('/', isAuthenticated, indexRouter);
 
 // catch 404 and forward to error handler

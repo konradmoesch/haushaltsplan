@@ -25,21 +25,19 @@ function formatMoney(floatVal) {
 }
 
 let ctx = $('#myChart');
-doAJAX('get', '/api/expenses/' + userID + '/sum/',{firstdate: formatDate($('#datepickerStart').val()), lastdate: formatDate($('#datepickerEnd').val()) }).done(function (data) {
+doAJAX('get', '/api/earnings/' + userID + '/sum/',{firstdate: formatDate($('#datepickerStart').val()), lastdate: formatDate($('#datepickerEnd').val()) }).done(function (data) {
     let myChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Lokal', 'Wiederkehrend', 'Online'],
+            labels: ['Wiederkehrend', 'Sonstige'],
             datasets: [{
-                label: 'Ausgaben',
+                label: 'Einnahmen',
                 data: [
-                    data.response[0].sumLocal,
                     data.response[0].sumRecurring,
-                    data.response[0].sumOnline
+                    data.response[0].sumOther
                 ],
                 backgroundColor: [
                     'rgb(255, 99, 132)',
-                    'rgb(54, 162, 235)',
                     'rgb(255, 205, 86)'
                 ],
             }]
@@ -58,22 +56,20 @@ doAJAX('get', '/api/expenses/' + userID + '/sum/',{firstdate: formatDate($('#dat
     showToast('error', 'Diagramm konnte nicht geladen werden', data.error);
 });
 
-let ctx2 = $('#myChart2');
-doAJAX('get', '/api/expenses/' + userID + '/days/',{firstdate: formatDate($('#datepickerStart').val()), lastdate: formatDate($('#datepickerEnd').val()) }).done(function (data) {
+/*let ctx2 = $('#myChart2');
+doAJAX('get', '/api/earnings/' + userID + '/days/',{firstdate: formatDate($('#datepickerStart').val()), lastdate: formatDate($('#datepickerEnd').val()) }).done(function (data) {
     let myChart = new Chart(ctx2, {
         type: 'doughnut',
         data: {
-            labels: ['Lokal', 'Wiederkehrend', 'Online'],
+            labels: ['Wiederkehrend', 'Sonstige'],
             datasets: [{
                 label: 'Ausgaben',
                 data: [
-                    data.response[0].sumLocal,
                     data.response[0].sumRecurring,
-                    data.response[0].sumOnline
+                    data.response[0].sumOther
                 ],
                 backgroundColor: [
                     'rgb(255, 99, 132)',
-                    'rgb(54, 162, 235)',
                     'rgb(255, 205, 86)'
                 ],
             }]
@@ -90,14 +86,13 @@ doAJAX('get', '/api/expenses/' + userID + '/days/',{firstdate: formatDate($('#da
 }).fail(function (xhr) {
     let data = xhr.responseJSON;
     showToast('error', 'Diagramm konnte nicht geladen werden', data.error);
-});
+});*/
 
 
 $(function () {
-    let tableLocalExpenses = $('#table_store_expenses').DataTable({
+    let tableRecurringEarnings = $('#table_recurring_earnings').DataTable({
         columns: [
             {data: 'name'},
-            {data: 'place'},
             {
                 data: 'date',
                 render: function (data, type, row) {
@@ -117,18 +112,17 @@ $(function () {
             }
         ],
         ajax: {
-            url: '/api/expenses/'+ userID,
+            url: '/api/earnings/'+ userID,
             type: 'get',
-            data: (d) => { d.firstdate=formatDate($('#datepickerStart').val()); d.lastdate=formatDate($('#datepickerEnd').val()); d.category=0 },
+            data: (d) => { d.firstdate=formatDate($('#datepickerStart').val()); d.lastdate=formatDate($('#datepickerEnd').val()); d.category=0; },
             dataSrc: 'response'
         },
         "searching": false,
         order: [[1, 'asc']]
     });
-    let tableRecurringExpenses = $('#table_recurring_expenses').DataTable({
+    let tableOtherEarnings = $('#table_other_earnings').DataTable({
         columns: [
             {data: 'name'},
-            {data: 'place'},
             {
                 data: 'date',
                 render: function (data, type, row) {
@@ -148,40 +142,9 @@ $(function () {
             }
         ],
         ajax: {
-            url: '/api/expenses/'+ userID,
+            url: '/api/earnings/'+ userID,
             type: 'get',
             data: (d) => { d.firstdate=formatDate($('#datepickerStart').val()); d.lastdate=formatDate($('#datepickerEnd').val()); d.category=1; },
-            dataSrc: 'response'
-        },
-        "searching": false,
-        order: [[1, 'asc']]
-    });
-    let tableOnlineExpenses = $('#table_online_expenses').DataTable({
-        columns: [
-            {data: 'name'},
-            {data: 'place'},
-            {
-                data: 'date',
-                render: function (data, type, row) {
-                    let date = new Date(data).toLocaleDateString('de-DE', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit'
-                    });
-                    return date;
-                }
-            },
-            {
-                data: 'value',
-                render: function (data, type, row) {
-                    return formatMoney(data);
-                }
-            }
-        ],
-        ajax: {
-            url: '/api/expenses/'+ userID,
-            type: 'get',
-            data: (d) => { d.firstdate=formatDate($('#datepickerStart').val()); d.lastdate=formatDate($('#datepickerEnd').val()); d.category=2 },
             dataSrc: 'response'
         },
         "searching": false,
@@ -217,30 +180,26 @@ $(function () {
 });
 
 $('#datepickerEnd').on('change', function () {
-    reloadDT('#table_local_expenses');
-    reloadDT('#table_recurring_expenses');
-    reloadDT('#table_online_expenses');
+    reloadDT('#table_recurring_earnings');
+    reloadDT('#table_other_earnings');
 });
 
-$('#btnAddExpense').on('click', function () {
+$('#btnAddEarning').on('click', function () {
     let category = $('#selectCategory').val();
-    let product = $('#inputProduct').val();
-    let place = $('#inputPlace').val();
+    let name = $('#inputName').val();
     let date = formatDate($('#inputDate').val());
     let value = $('#inputValue').val();
 
-    if (category !== '' && product !== '' && place !== '' && date !== '' && value !== '') {
-        doAJAX('post', '/api/expenses/' + userID + '/', {
+    if (category !== '' && name !== '' && date !== '' && value !== '') {
+        doAJAX('post', '/api/earnings/' + userID + '/', {
             category,
-            product,
-            place,
+            name,
             date,
             value
         }).done(function (data) {
             showToast('success', null, data.response);
-            reloadDT('#table_local_expenses');
-            reloadDT('#table_recurring_expenses');
-            reloadDT('#table_online_expenses');
+            reloadDT('#table_recurring_earnings');
+            reloadDT('#table_other_earnings');
         }).fail(function (xhr) {
             let data = xhr.responseJSON;
             showToast('error', null, data.error);

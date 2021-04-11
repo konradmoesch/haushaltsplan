@@ -1,95 +1,110 @@
-function showToast(state, title, message) {
-    $('body')
-        .toast({
-            class: state,
-            title: title,
-            message: message,
-            showProgress: 'bottom'
-        })
-    ;
-}
-function formatDate(date) {
-    let d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-
-    return [year, month, day].join('-');
-}
-
-function formatMoney(floatVal) {
-    return Number(floatVal).toLocaleString('de-DE', {'currency': 'EUR', 'style': 'currency'});
-}
-
-let ctx = $('#myChart');
-doAJAX('get', '/api/earnings/' + userID + '/sum/',{firstdate: formatDate($('#datepickerStart').val()), lastdate: formatDate($('#datepickerEnd').val()) }).done(function (data) {
-    let myChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Wiederkehrend', 'Sonstige'],
-            datasets: [{
-                label: 'Einnahmen',
-                data: [
-                    data.response[0].sumRecurring,
-                    data.response[0].sumOther
-                ],
-                backgroundColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(255, 205, 86)'
-                ],
-            }]
-        },
-        options: {
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Verteilung',
-                }
-            }
-        }
-    });
-}).fail(function (xhr) {
-    let data = xhr.responseJSON;
-    showToast('error', 'Diagramm konnte nicht geladen werden', data.error);
+$(document).ready(function () {
+    createCalendars();
+    setDatesOnPickers();
+    loadCharts();
+    loadDT();
 });
 
-/*let ctx2 = $('#myChart2');
-doAJAX('get', '/api/earnings/' + userID + '/days/',{firstdate: formatDate($('#datepickerStart').val()), lastdate: formatDate($('#datepickerEnd').val()) }).done(function (data) {
-    let myChart = new Chart(ctx2, {
-        type: 'doughnut',
-        data: {
-            labels: ['Wiederkehrend', 'Sonstige'],
-            datasets: [{
-                label: 'Ausgaben',
-                data: [
-                    data.response[0].sumRecurring,
-                    data.response[0].sumOther
-                ],
-                backgroundColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(255, 205, 86)'
-                ],
-            }]
-        },
-        options: {
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Verteilung',
+function createCalendars() {
+    //Range-Datepickers
+    $('#rangestart').calendar({
+        type: 'date',
+        endCalendar: $('#rangeend')
+    });
+    $('#rangeend').calendar({
+        type: 'date',
+        startCalendar: $('#rangestart')
+    });
+    //Addform-Datepicker
+    $('#selectDate').calendar({type: 'date'});
+    //Dropdowns
+    $('.selection.dropdown').dropdown();
+}
+
+function setDatesOnPickers() {
+    //Set Dates On Calendars
+    let date = new Date();
+    let firstDay = new Date(date.getFullYear(), date.getMonth(), 1).toLocaleDateString('en-us', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).toLocaleString('en-us', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    $('#datepickerStart').val(firstDay);
+    $('#datepickerEnd').val(lastDay);
+}
+
+function loadCharts() {
+    let ctx = $('#myChart');
+    doAJAX('get', '/api/earnings/' + userID + '/sum/',{firstdate: formatDateYYYYMMDD($('#datepickerStart').val()), lastdate: formatDateYYYYMMDD($('#datepickerEnd').val()) }).done(function (data) {
+        let myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Wiederkehrend', 'Sonstige'],
+                datasets: [{
+                    label: 'Einnahmen',
+                    data: [
+                        data.response[0].sumRecurring,
+                        data.response[0].sumOther
+                    ],
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(255, 205, 86)'
+                    ],
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Verteilung',
+                    }
                 }
             }
-        }
+        });
+    }).fail(function (xhr) {
+        let data = xhr.responseJSON;
+        showToast('error', 'Diagramm konnte nicht geladen werden', data.error);
     });
-}).fail(function (xhr) {
-    let data = xhr.responseJSON;
-    showToast('error', 'Diagramm konnte nicht geladen werden', data.error);
-});*/
 
+    let ctx2 = $('#myChart2');
+    doAJAX('get', '/api/earnings/' + userID + '/days/',{firstdate: formatDateYYYYMMDD($('#datepickerStart').val()), lastdate: formatDateYYYYMMDD($('#datepickerEnd').val()) }).done(function (data) {
+        let myChart = new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Wiederkehrend', 'Sonstige'],
+                datasets: [{
+                    label: 'Ausgaben',
+                    data: [
+                        data.response[0].sumRecurring,
+                        data.response[0].sumOther
+                    ],
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(255, 205, 86)'
+                    ],
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Verteilung',
+                    }
+                }
+            }
+        });
+    }).fail(function (xhr) {
+        let data = xhr.responseJSON;
+        showToast('error', 'Diagramm konnte nicht geladen werden', data.error);
+    });
+}
 
-$(function () {
+function loadDT() {
     let tableRecurringEarnings = $('#table_recurring_earnings').DataTable({
         columns: [
             {data: 'name'},
@@ -109,7 +124,7 @@ $(function () {
         ajax: {
             url: '/api/earnings/'+ userID,
             type: 'get',
-            data: (d) => { d.firstdate=formatDate($('#datepickerStart').val()); d.lastdate=formatDate($('#datepickerEnd').val()); d.category=0; },
+            data: (d) => { d.firstdate=formatDateYYYYMMDD($('#datepickerStart').val()); d.lastdate=formatDateYYYYMMDD($('#datepickerEnd').val()); d.category=0; },
             dataSrc: 'response'
         },
         "searching": false,
@@ -134,50 +149,25 @@ $(function () {
         ajax: {
             url: '/api/earnings/'+ userID,
             type: 'get',
-            data: (d) => { d.firstdate=formatDate($('#datepickerStart').val()); d.lastdate=formatDate($('#datepickerEnd').val()); d.category=1; },
+            data: (d) => { d.firstdate=formatDateYYYYMMDD($('#datepickerStart').val()); d.lastdate=formatDateYYYYMMDD($('#datepickerEnd').val()); d.category=1; },
             dataSrc: 'response'
         },
         "searching": false,
         order: [[1, 'asc']]
     });
-});
-$('#rangestart').calendar({
-    type: 'date',
-    endCalendar: $('#rangeend')
-});
-$('#rangeend').calendar({
-    type: 'date',
-    startCalendar: $('#rangestart')
-});
-$('.selection.dropdown').dropdown();
+}
 
-$('#selectDate').calendar({type: 'date'});
-
-$(function () {
-    let date = new Date();
-    let firstDay = new Date(date.getFullYear(), date.getMonth(), 1).toLocaleDateString('en-us', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-    let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).toLocaleString('en-us', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-    $('#datepickerStart').val(firstDay);
-    $('#datepickerEnd').val(lastDay);
-});
-
+//Reload on Change
 $('#datepickerEnd').on('change', function () {
     reloadDT('#table_recurring_earnings');
     reloadDT('#table_other_earnings');
 });
 
+//Addbutton
 $('#btnAddEarning').on('click', function () {
     let category = $('#selectCategory').val();
     let name = $('#inputName').val();
-    let date = formatDate($('#inputDate').val());
+    let date = formatDateYYYYMMDD($('#inputDate').val());
     let value = $('#inputValue').val();
 
     if (category !== '' && name !== '' && date !== '' && value !== '') {

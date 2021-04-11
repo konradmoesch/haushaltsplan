@@ -21,32 +21,31 @@ function convertToGermanDate(date) {
     });
 }
 
-function showToast(vType, vText, vError = '') {
-    let colorClass = '';
-    let iconFa = '';
-    switch (vType) {
-        case 'success':
-            colorClass = 'green';
-            iconFa = 'check';
-            break;
-        case 'warning':
-            colorClass = 'orange';
-            iconFa = 'exclamation';
-            break;
-        case 'error':
-            colorClass = 'red';
-            iconFa = 'exclamation triangle';
-            break;
-        case 'info':
-            colorClass = 'blue';
-            iconFa = 'info';
-            break;
-    }
-    vError = (vError) ? '<pre>' + vError + '</pre>' : '';
-    $('#notification').append('<div class="ui icon transition message ' + colorClass + '"><i class="' + iconFa + ' icon"></i><i onclick="$(this).parent().remove();" class="close icon"></i><div class="content"><p>' + vText + '</p>' + vError + '</div></div>');
-    $('#notification :last-child').fadeIn().delay(3000).fadeOut(1000, () => {
-        $(this).remove();
-    });
+function showToast(state, title, message) {
+    $('body')
+        .toast({
+            class: state,
+            title: title,
+            message: message,
+            showProgress: 'bottom'
+        })
+    ;
+}
+
+function formatDateYYYYMMDD(date) {
+    let d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
+function formatMoney(floatVal) {
+    return Number(floatVal).toLocaleString('de-DE', {'currency': 'EUR', 'style': 'currency'});
 }
 
 //datatable defaults

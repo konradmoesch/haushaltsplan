@@ -83,8 +83,8 @@ router.route('/:id')
             });
         }
     })
-    //delete specific user
     //TODO: Not implemented yet
+    //delete specific user
     .delete(adminOnlyApi, ajaxOnly, function (request, response) {
         if (request.params.id === '1') {
             sendRes(response, 500, null, 'Der Administrator kann nicht gelöscht werden.');

@@ -114,11 +114,11 @@ router.route('/:id/password')
                 if (queryErr) {
                     sendRes(response, 500, null, queryErr);
                 } else if (bcrypt.compareSync(request.body.currentPassword, queryRes[0].password)) {
-                    con.query('UPDATE users SET password = ?, lastPwChange = NOW() WHERE id = ? LIMIT 1;', [bcrypt.hashSync(request.body.newPassword), request.params.id], function (queryErr, queryRes) {
-                        if (queryErr) {
-                            sendRes(response, 500, null, queryErr);
+                    con.query('UPDATE users SET password = ?, lastPwChange = NOW() WHERE id = ? LIMIT 1;', [bcrypt.hashSync(request.body.newPassword), request.params.id], function (query2Err, query2Res) {
+                        if (query2Err) {
+                            sendRes(response, 500, null, query2Err);
                         } else {
-                            if (queryRes.affectedRows === 1) {
+                            if (query2Res.affectedRows === 1) {
                                 sendRes(response, 200, 'Passwort wurde erfolgreich geändert');
                             } else {
                                 sendRes(response, 500, null, 'an error occurred');

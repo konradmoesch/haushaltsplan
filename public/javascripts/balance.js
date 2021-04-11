@@ -90,7 +90,7 @@ function loadStats() {
     });
     //Bilanz
     doAJAX('get', '/api/balance/' + userID + '/',{firstdate: formatDateYYYYMMDD($('#datepickerStart').val()), lastdate: formatDateYYYYMMDD($('#datepickerEnd').val()) }).done(function (data) {
-        $('#statBalance').text('-'+formatMoney(data.response[0].sum));
+        $('#statBalance').text(formatMoney(data.response[0].sum));
     }).fail(function (xhr) {
         let data = xhr.responseJSON;
         showToast('error', 'Statistik (Einnahmen) konnte nicht geladen werden', data.error);
@@ -99,5 +99,5 @@ function loadStats() {
 
 //Reload on Change
 $('#datepickerEnd').on('change', function () {
-    //reload Charts
+    loadStats();
 });

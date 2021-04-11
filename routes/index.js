@@ -19,9 +19,6 @@ function adminOnly(req, res, next) {
 }
 
 router.get('/', function(req, res, next) {
-  /*req.runMiddleware('/api/users/' + req.user.id, {method: 'get'}, function (responseCode, body) {
-    res.render('index', {title: 'Haushaltsplan', userdata: JSON.parse(body)});
-  });*/
   res.render('index', {title: 'Haushaltsplan'});
 });
 router.get('/profile', function(req, res, next) {

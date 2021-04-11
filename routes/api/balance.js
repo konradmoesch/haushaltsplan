@@ -7,7 +7,6 @@ function sendRes(res, status, response = null, error = null) {
     res.status(status).send(JSON.stringify({status, error, response}));
 }
 
-//TODO: Use this where necessary
 function ajaxOnly(req, res, next) {
     if (req.xhr) {
         return next();
@@ -15,7 +14,6 @@ function ajaxOnly(req, res, next) {
     res.sendStatus(403);
 }
 
-//TODO: Use this where necessary
 function adminOnlyApi(req, res, next) {
     if (req.user.admin === 1) {
         return next();

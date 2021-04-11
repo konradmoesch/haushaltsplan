@@ -1,14 +1,3 @@
-function showToast(state, title, message) {
-    $('body')
-        .toast({
-            class: state,
-            title: title,
-            message: message,
-            showProgress: 'bottom'
-        })
-    ;
-}
-
 $('.ui.checkbox')
     .checkbox()
 ;
@@ -58,7 +47,6 @@ $('#btnEditUserdata').on('click', function () {
             disabled
         }).done(function (data) {
             showToast('success', 'Erfolg', data.response);
-            //setTimeout(location.reload.bind(location), 1200);
         }).fail(function (xhr) {
             let data = xhr.responseJSON;
             showToast('error', null, data.error);
@@ -93,7 +81,6 @@ $('#btnChangePassword').on('click', function () {
             newPassword
         }).done(function (data) {
             showToast('success', null, data.response);
-            //setTimeout(location.reload.bind(location), 1200);
         }).fail(function (xhr) {
             let data = xhr.responseJSON;
             showOutput('formPassword', 'error', data.error);

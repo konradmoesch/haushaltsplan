@@ -16,6 +16,14 @@ block content
                     .ui.input.left.icon
                         i.calendar.icon
                         input#datepickerEnd(type='text' placeholder='Enddatum' name='dateEnd')
+            .field
+                label Schnellwechsel
+                .ui.pagination.menu
+                    a.icon.item#prevMonthBtn
+                        i.left.chevron.icon
+                    .disabled.item#monthDisplay April
+                    a.icon.item#nextMonthBtn
+                        i.right.chevron.icon
 
     canvas#barChart
 

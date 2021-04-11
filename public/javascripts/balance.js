@@ -5,6 +5,36 @@ $(document).ready(function () {
     loadStats();
 });
 
+function reloadPagination() {
+    $('#monthDisplay').text(new Date($('#datepickerStart').val()).toLocaleDateString('de-DE', {
+        month: 'long'
+    }));
+}
+
+function changeMonth(dir) {
+    let firstdate = new Date($('#datepickerStart').val());
+    let lastdate = new Date($('#datepickerEnd').val());
+    if(dir==='+'){
+        firstdate.setMonth(firstdate.getMonth()+1);
+        lastdate = new Date(lastdate.getFullYear(), lastdate.getMonth()+2, 0);
+    } else if (dir==='-') {
+        firstdate.setMonth(firstdate.getMonth()-1);
+        lastdate = new Date(lastdate.getFullYear(), lastdate.getMonth(), 0);
+    }
+    $('#datepickerStart').val(firstdate.toLocaleDateString('en-us', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    }));
+    $('#datepickerEnd').val(lastdate.toLocaleDateString('en-us', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    }));
+    reloadPagination();
+    loadStats();
+}
+
 function createCalendars() {
     //Range-Datepickers
     $('#rangestart').calendar({
@@ -34,6 +64,7 @@ function setDatesOnPickers() {
     });
     $('#datepickerStart').val(firstDay);
     $('#datepickerEnd').val(lastDay);
+    reloadPagination();
 }
 
 function loadCharts() {
@@ -100,4 +131,11 @@ function loadStats() {
 //Reload on Change
 $('#datepickerEnd').on('change', function () {
     loadStats();
+    reloadPagination();
 });
+$('#prevMonthBtn').on('click', function () {
+    changeMonth('-');
+})
+$('#nextMonthBtn').on('click', function () {
+    changeMonth('+');
+})

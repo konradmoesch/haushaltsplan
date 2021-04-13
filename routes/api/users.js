@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const con = require('../helpers/db');
+const sql = require('../helpers/sql');
 const bcrypt = require('bcrypt-nodejs');
 const api = require('../helpers/api');
 
@@ -13,55 +13,35 @@ router.route('/')
     //get list of all users
     //TODO: Not implemented yet
     .get(api.adminOnlyApi, function (request, response) {
-        con.query('SELECT id, username, fullname, email, admin, disabled FROM users;', function (queryErr, queryRes) {
-            if (queryErr) {
-                api.sendJSONResponse(response, 500, null, queryErr);
-            } else {
-                api.sendJSONResponse(response, 200, queryRes);
-            }
-        });
+        let sqlStmt = 'SELECT id, username, fullname, email, admin, disabled FROM users;';
+        let queryData = null;
+        sql.querySQL(response, sqlStmt, queryData);
     })
     //create user
     .post(function (request, response) {
         if(!isStrongPw(request.body.password)) {
             api.sendJSONResponse(response, 500, null, 'Passwort nicht sicher genug!');
         } else {
-            con.query('INSERT INTO users (username, fullname, email, admin, `password`, disabled, lastPwChange) VALUES (?, ?, ?, ?, ?, 0, NOW());', [request.body.username, request.body.fullname, request.body.email, request.body.admin, bcrypt.hashSync(request.body.password)], function (queryErr, queryRes) {
-                if (queryErr) {
-                    api.sendJSONResponse(response, 500, null, queryErr);
-                } else {
-                    api.sendJSONResponse(response, 200, 'user created successfully');
-                }
-            });
+            let sqlStmt = 'INSERT INTO users (username, fullname, email, admin, `password`, disabled, lastPwChange) VALUES (?, ?, ?, ?, ?, 0, NOW());';
+            let queryData = [request.body.username, request.body.fullname, request.body.email, request.body.admin, bcrypt.hashSync(request.body.password)];
+            sql.querySQL(response, sqlStmt, queryData);
         }
     });
 router.route('/:id')
     //get specific user
     .get(function (request, response) {
-        con.query('SELECT id,username,fullname,email,admin,disabled FROM users WHERE id=? LIMIT 1;', [request.params.id], function (queryErr, queryRes) {
-            if (queryErr) {
-                api.sendJSONResponse(response, 500, null, queryErr);
-            } else {
-                api.sendJSONResponse(response, 200, queryRes);
-            }
-        });
+        let sqlStmt = 'SELECT id,username,fullname,email,admin,disabled FROM users WHERE id=? LIMIT 1;';
+        let queryData = [request.params.id];
+        sql.querySQL(response, sqlStmt, queryData);
     })
     //edit specific user
     .put(function (request, response) {
         if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {
             api.sendJSONResponse(response, 422, null, 'Beim Bearbeiten dieses Nutzers ist ein Fehler aufgetreten')
         } else {
-            con.query('UPDATE users SET username = ?, fullname = ?, email = ?, admin = ?, disabled = ? WHERE id = ? LIMIT 1;', [request.body.username, request.body.fullname, request.body.email, request.body.admin, request.body.disabled, request.params.id], function (queryErr, queryRes) {
-                if (queryErr) {
-                    api.sendJSONResponse(response, 500, null, queryErr);
-                } else {
-                    if (queryRes.affectedRows === 1) {
-                        api.sendJSONResponse(response, 200, 'Benutzer wurde erfolgreich bearbeitet.');
-                    } else {
-                        api.sendJSONResponse(response, 500, null, 'an error occurred');
-                    }
-                }
-            });
+            let sqlStmt = 'UPDATE users SET username = ?, fullname = ?, email = ?, admin = ?, disabled = ? WHERE id = ? LIMIT 1;';
+            let queryData = [request.body.username, request.body.fullname, request.body.email, request.body.admin, request.body.disabled, request.params.id];
+            sql.querySQL(response, sqlStmt, queryData);
         }
     })
     //TODO: Not implemented yet
@@ -70,17 +50,9 @@ router.route('/:id')
         if (request.params.id === '1') {
             api.sendJSONResponse(response, 500, null, 'Der Administrator kann nicht gelöscht werden.');
         } else {
-            con.query('DELETE FROM users WHERE id = ? LIMIT 1;', [request.params.id], function (queryErr, queryRes) {
-                if (queryErr) {
-                    api.sendJSONResponse(response, 500, null, queryErr);
-                } else {
-                    if (queryRes.affectedRows === 1) {
-                        api.sendJSONResponse(response, 200, 'Benutzer wurde erfolgreich gelöscht.');
-                    } else {
-                        api.sendJSONResponse(response, 500, null, 'an error occurred');
-                    }
-                }
-            });
+            let sqlStmt = 'DELETE FROM users WHERE id = ? LIMIT 1;';
+            let queryData = [request.params.id];
+            sql.querySQL(response, sqlStmt, queryData);
         }
     });
 router.route('/:id/password')
@@ -91,11 +63,11 @@ router.route('/:id/password')
         } else if (!isStrongPw(request.body.newPassword)) {
             api.sendJSONResponse(response, 422, null, 'Das Kennwort entspricht nicht den Anforderungen.');
         } else {
-            con.query('SELECT password FROM users WHERE id = ? LIMIT 1;', [request.params.id], function (queryErr, queryRes) {
+            sql.con.query('SELECT password FROM users WHERE id = ? LIMIT 1;', [request.params.id], function (queryErr, queryRes) {
                 if (queryErr) {
                     api.sendJSONResponse(response, 500, null, queryErr);
                 } else if (bcrypt.compareSync(request.body.currentPassword, queryRes[0].password)) {
-                    con.query('UPDATE users SET password = ?, lastPwChange = NOW() WHERE id = ? LIMIT 1;', [bcrypt.hashSync(request.body.newPassword), request.params.id], function (query2Err, query2Res) {
+                    sql.con.query('UPDATE users SET password = ?, lastPwChange = NOW() WHERE id = ? LIMIT 1;', [bcrypt.hashSync(request.body.newPassword), request.params.id], function (query2Err, query2Res) {
                         if (query2Err) {
                             api.sendJSONResponse(response, 500, null, query2Err);
                         } else {

@@ -216,7 +216,7 @@ $('#btnAddExpense').on('click', function () {
             date,
             value
         }).done(function (data) {
-            showToast('success', null, data.response);
+            showToast('success', null, 'Diese Ausgabe ist erfolgreich hinzugefügt worden.');
             reloadDT('#table_local_expenses');
             reloadDT('#table_recurring_expenses');
             reloadDT('#table_online_expenses');

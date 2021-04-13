@@ -2,8 +2,10 @@ $('#sendFeedback').on('click', function () {
     let msg = $('#newFeedbackMsg').val();
     if (msg !== '') {
         doAJAX('put', '/api/feedback', {msg}).done(function (data) {
-            showToast('success', data.response);
-            $('#newFeedbackMsg').val('');
+            if(data.response) {
+                showToast('success', null, 'Erfolgreich Abgesendet');
+                $('#newFeedbackMsg').val('');
+            } else showToast('error', null, 'Keine valide Serverantwort');
         }).fail(function (xhr) {
             let data = xhr.responseJSON;
             showToast('error', 'Fehler (' + data.errorCode + ')', data.error);

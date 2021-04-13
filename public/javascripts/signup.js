@@ -32,9 +32,11 @@ $('#addUserBtn').on('click', function () {
             admin,
             password
         }).done(function (data) {
-            showToast('success', null, data.response);
-            $(location).attr('href', '/');
-            setTimeout(location.reload.bind(location), 1200);
+            if (data.response) {
+                showToast('success', null, 'Erfolgreich erstellt');
+                $(location).attr('href', '/');
+                setTimeout(location.reload.bind(location), 1200);
+            } else showToast('error', null, 'Keine valide Serverantwort');
         }).fail(function (xhr) {
             let data = xhr.responseJSON;
             showToast('error', 'Fehler (' + data.errorCode + ')', data.error);

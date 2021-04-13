@@ -57,7 +57,9 @@ $('#btnEditUserdata').on('click', function () {
             admin,
             disabled
         }).done(function (data) {
-            showToast('success', 'Erfolg', data.response);
+            if (data.response) {
+                showToast('success', 'Erfolg', 'Der Nutzer wurde erfolgreich geändert');
+            } else showToast('error', null, 'Keine valide Serverantwort');
         }).fail(function (xhr) {
             let data = xhr.responseJSON;
             showToast('error', null, data.error);
@@ -80,7 +82,9 @@ $('#btnChangePassword').on('click', function () {
             currentPassword,
             newPassword
         }).done(function (data) {
-            showToast('success', null, data.response);
+            if(data.response){
+                showToast('success', null, 'Das Passwort wurde geändert');
+            } else showToast('error', null, 'Keine valide Serverantwort');
         }).fail(function (xhr) {
             let data = xhr.responseJSON;
             showOutput('formPassword', 'error', data.error);

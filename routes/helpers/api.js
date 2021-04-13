@@ -1,4 +1,5 @@
 class API {
+    static errorMsg = 'Es ist ein Fehler aufgetreten.';
 
     static sendJSONResponse(res, status, response = null, error = null) {
         res.status(status).send(JSON.stringify({status, error, response}));
@@ -11,9 +12,6 @@ class API {
         this.sendJSONResponse(res, 403, null, null);
     }
 
-    static doQuery() {
-
-    }
 }
 
 module.exports = API;

@@ -179,7 +179,7 @@ $('#btnAddEarning').on('click', function () {
             date,
             value
         }).done(function (data) {
-            showToast('success', null, data.response);
+            showToast('success', null, 'Diese Einnahme ist erfolgreich hinzugefügt worden.');
             reloadDT('#table_recurring_earnings');
             reloadDT('#table_other_earnings');
         }).fail(function (xhr) {

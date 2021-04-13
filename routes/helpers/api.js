@@ -1,6 +1,4 @@
 class API {
-    constructor() {
-    }
 
     static sendJSONResponse(res, status, response = null, error = null) {
         res.status(status).send(JSON.stringify({status, error, response}));
@@ -10,7 +8,7 @@ class API {
         if (req.user.admin === 1) {
             return next();
         }
-        sendJSONResponse(res, 403, null, null);
+        this.sendJSONResponse(res, 403, null, null);
     }
 
     static doQuery() {

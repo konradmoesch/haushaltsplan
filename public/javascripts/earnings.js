@@ -163,6 +163,7 @@ function loadDT() {
 $('#datepickerEnd').on('change', function () {
     reloadDT('#table_recurring_earnings');
     reloadDT('#table_other_earnings');
+    loadCharts();
 });
 
 //Addbutton
@@ -182,6 +183,7 @@ $('#btnAddEarning').on('click', function () {
             showToast('success', null, 'Diese Einnahme ist erfolgreich hinzugefügt worden.');
             reloadDT('#table_recurring_earnings');
             reloadDT('#table_other_earnings');
+            loadCharts();
         }).fail(function (xhr) {
             let data = xhr.responseJSON;
             showToast('error', null, data.error);

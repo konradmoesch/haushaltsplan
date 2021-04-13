@@ -198,6 +198,7 @@ $('#datepickerEnd').on('change', function () {
     reloadDT('#table_local_expenses');
     reloadDT('#table_recurring_expenses');
     reloadDT('#table_online_expenses');
+    loadCharts();
 });
 
 //Addbutton
@@ -220,6 +221,7 @@ $('#btnAddExpense').on('click', function () {
             reloadDT('#table_local_expenses');
             reloadDT('#table_recurring_expenses');
             reloadDT('#table_online_expenses');
+            loadCharts();
         }).fail(function (xhr) {
             let data = xhr.responseJSON;
             showToast('error', null, data.error);

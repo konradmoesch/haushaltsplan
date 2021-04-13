@@ -131,6 +131,7 @@ function loadStats() {
 //Reload on Change
 $('#datepickerEnd').on('change', function () {
     loadStats();
+    loadCharts();
     reloadPagination();
 });
 $('#prevMonthBtn').on('click', function () {

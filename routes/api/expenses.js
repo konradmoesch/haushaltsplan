@@ -8,14 +8,6 @@ function sendRes(res, status, response = null, error = null) {
 }
 
 //TODO: Use this where necessary
-function ajaxOnly(req, res, next) {
-    if (req.xhr) {
-        return next();
-    }
-    res.sendStatus(403);
-}
-
-//TODO: Use this where necessary
 function adminOnlyApi(req, res, next) {
     if (req.user.admin === 1) {
         return next();
@@ -24,7 +16,7 @@ function adminOnlyApi(req, res, next) {
 }
 
 router.route('/:id')
-    .get(ajaxOnly, function (request, response) {
+    .get(function (request, response) {
         if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {
             sendRes(response, 422, null, 'Beim Abrufen dieser Ausgabenliste ist ein Fehler aufgetreten')
         } else {
@@ -37,7 +29,7 @@ router.route('/:id')
             });
         }
     })
-    .post(ajaxOnly, function (request, response) {
+    .post(function (request, response) {
         if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {
             sendRes(response, 422, null, 'Beim Ausführen dieser Abfrage ist ein Fehler aufgetreten')
         } else {
@@ -51,7 +43,7 @@ router.route('/:id')
         }
     });
 router.route('/:id/sum')
-    .get(ajaxOnly, function (request, response) {
+    .get(function (request, response) {
         if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {
             sendRes(response, 422, null, 'Beim Abrufen dieser Daten ist ein Fehler aufgetreten')
         } else {
@@ -65,7 +57,7 @@ router.route('/:id/sum')
         }
     });
 router.route('/:id/sumall')
-    .get(ajaxOnly, function (request, response) {
+    .get(function (request, response) {
         if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {
             sendRes(response, 422, null, 'Beim Abrufen dieser Daten ist ein Fehler aufgetreten')
         } else {
@@ -79,7 +71,7 @@ router.route('/:id/sumall')
         }
     });
 router.route('/:id/days')
-    .get(ajaxOnly, function (request, response) {
+    .get(function (request, response) {
         if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {
             sendRes(response, 422, null, 'Beim Abrufen dieser Daten ist ein Fehler aufgetreten')
         } else {

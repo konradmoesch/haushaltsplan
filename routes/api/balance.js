@@ -7,13 +7,6 @@ function sendRes(res, status, response = null, error = null) {
     res.status(status).send(JSON.stringify({status, error, response}));
 }
 
-function ajaxOnly(req, res, next) {
-    if (req.xhr) {
-        return next();
-    }
-    res.sendStatus(403);
-}
-
 function adminOnlyApi(req, res, next) {
     if (req.user.admin === 1) {
         return next();
@@ -22,7 +15,7 @@ function adminOnlyApi(req, res, next) {
 }
 
 router.route('/:id')
-    .get(ajaxOnly, function (request, response) {
+    .get(function (request, response) {
         if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {
             sendRes(response, 422, null, 'Beim Abrufen dieser Daten ist ein Fehler aufgetreten')
         } else {

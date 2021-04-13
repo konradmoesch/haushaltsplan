@@ -13,14 +13,6 @@ function isStrongPw(pw) {
 }
 
 //TODO: Use this where necessary
-function ajaxOnly(req, res, next) {
-    if (req.xhr) {
-        return next();
-    }
-    res.sendStatus(403);
-}
-
-//TODO: Use this where necessary
 function adminOnlyApi(req, res, next) {
     if (req.user.admin === 1) {
         return next();
@@ -31,7 +23,7 @@ function adminOnlyApi(req, res, next) {
 router.route('/')
     //get list of all users
     //TODO: Not implemented yet
-    .get(adminOnlyApi, ajaxOnly, function (request, response) {
+    .get(adminOnlyApi, function (request, response) {
         con.query('SELECT id, username, fullname, email, admin, disabled FROM users;', function (queryErr, queryRes) {
             if (queryErr) {
                 sendRes(response, 500, null, queryErr);
@@ -41,7 +33,7 @@ router.route('/')
         });
     })
     //create user
-    .post(ajaxOnly, function (request, response) {
+    .post(function (request, response) {
         if(!isStrongPw(request.body.password)) {
             sendRes(response, 500, null, 'Passwort nicht sicher genug!');
         } else {
@@ -56,7 +48,7 @@ router.route('/')
     });
 router.route('/:id')
     //get specific user
-    .get(ajaxOnly, function (request, response) {
+    .get(function (request, response) {
         con.query('SELECT id,username,fullname,email,admin,disabled FROM users WHERE id=? LIMIT 1;', [request.params.id], function (queryErr, queryRes) {
             if (queryErr) {
                 sendRes(response, 500, null, queryErr);
@@ -66,7 +58,7 @@ router.route('/:id')
         });
     })
     //edit specific user
-    .put(ajaxOnly, function (request, response) {
+    .put(function (request, response) {
         if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {
             sendRes(response, 422, null, 'Beim Bearbeiten dieses Nutzers ist ein Fehler aufgetreten')
         } else {
@@ -85,7 +77,7 @@ router.route('/:id')
     })
     //TODO: Not implemented yet
     //delete specific user
-    .delete(adminOnlyApi, ajaxOnly, function (request, response) {
+    .delete(adminOnlyApi, function (request, response) {
         if (request.params.id === '1') {
             sendRes(response, 500, null, 'Der Administrator kann nicht gelöscht werden.');
         } else {
@@ -104,7 +96,7 @@ router.route('/:id')
     });
 router.route('/:id/password')
     //change own password
-    .put(ajaxOnly, function (request, response) {
+    .put(function (request, response) {
         if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {
             sendRes(response, 422, null, 'Sie können über diese Funktion nur Ihr eigenes Passwort ändern.');
         } else if (!isStrongPw(request.body.newPassword)) {

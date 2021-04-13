@@ -1,6 +1,6 @@
 {
   "name": "haushaltsplan",
-  "version": "0.0.4-1",
+  "version": "0.0.4-2",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
@@ -20,5 +20,8 @@
     "passport-local": "^1.0.0",
     "pug": "3.0.2",
     "run-middleware": "^0.9.10"
+  },
+  "devDependencies": {
+    "@types/mysql": "^2.15.18"
   }
 }

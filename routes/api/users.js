@@ -1,47 +1,36 @@
-let express = require('express');
-let router = express.Router();
-const bcrypt = require('bcrypt-nodejs');
+const express = require('express');
+const router = express.Router();
 const con = require('../helpers/db');
-
-function sendRes(res, status, response = null, error = null) {
-    res.status(status).send(JSON.stringify({status, error, response}));
-}
+const bcrypt = require('bcrypt-nodejs');
+const api = require('../helpers/api');
 
 function isStrongPw(pw) {
     let regExp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
     return regExp.test(pw);
 }
 
-//TODO: Use this where necessary
-function adminOnlyApi(req, res, next) {
-    if (req.user.admin === 1) {
-        return next();
-    }
-    sendRes(res, 403, null, null);
-}
-
 router.route('/')
     //get list of all users
     //TODO: Not implemented yet
-    .get(adminOnlyApi, function (request, response) {
+    .get(api.adminOnlyApi, function (request, response) {
         con.query('SELECT id, username, fullname, email, admin, disabled FROM users;', function (queryErr, queryRes) {
             if (queryErr) {
-                sendRes(response, 500, null, queryErr);
+                api.sendJSONResponse(response, 500, null, queryErr);
             } else {
-                sendRes(response, 200, queryRes);
+                api.sendJSONResponse(response, 200, queryRes);
             }
         });
     })
     //create user
     .post(function (request, response) {
         if(!isStrongPw(request.body.password)) {
-            sendRes(response, 500, null, 'Passwort nicht sicher genug!');
+            api.sendJSONResponse(response, 500, null, 'Passwort nicht sicher genug!');
         } else {
             con.query('INSERT INTO users (username, fullname, email, admin, `password`, disabled, lastPwChange) VALUES (?, ?, ?, ?, ?, 0, NOW());', [request.body.username, request.body.fullname, request.body.email, request.body.admin, bcrypt.hashSync(request.body.password)], function (queryErr, queryRes) {
                 if (queryErr) {
-                    sendRes(response, 500, null, queryErr);
+                    api.sendJSONResponse(response, 500, null, queryErr);
                 } else {
-                    sendRes(response, 200, 'user created successfully');
+                    api.sendJSONResponse(response, 200, 'user created successfully');
                 }
             });
         }
@@ -51,25 +40,25 @@ router.route('/:id')
     .get(function (request, response) {
         con.query('SELECT id,username,fullname,email,admin,disabled FROM users WHERE id=? LIMIT 1;', [request.params.id], function (queryErr, queryRes) {
             if (queryErr) {
-                sendRes(response, 500, null, queryErr);
+                api.sendJSONResponse(response, 500, null, queryErr);
             } else {
-                sendRes(response, 200, queryRes);
+                api.sendJSONResponse(response, 200, queryRes);
             }
         });
     })
     //edit specific user
     .put(function (request, response) {
         if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {
-            sendRes(response, 422, null, 'Beim Bearbeiten dieses Nutzers ist ein Fehler aufgetreten')
+            api.sendJSONResponse(response, 422, null, 'Beim Bearbeiten dieses Nutzers ist ein Fehler aufgetreten')
         } else {
             con.query('UPDATE users SET username = ?, fullname = ?, email = ?, admin = ?, disabled = ? WHERE id = ? LIMIT 1;', [request.body.username, request.body.fullname, request.body.email, request.body.admin, request.body.disabled, request.params.id], function (queryErr, queryRes) {
                 if (queryErr) {
-                    sendRes(response, 500, null, queryErr);
+                    api.sendJSONResponse(response, 500, null, queryErr);
                 } else {
                     if (queryRes.affectedRows === 1) {
-                        sendRes(response, 200, 'Benutzer wurde erfolgreich bearbeitet.');
+                        api.sendJSONResponse(response, 200, 'Benutzer wurde erfolgreich bearbeitet.');
                     } else {
-                        sendRes(response, 500, null, 'an error occurred');
+                        api.sendJSONResponse(response, 500, null, 'an error occurred');
                     }
                 }
             });
@@ -77,18 +66,18 @@ router.route('/:id')
     })
     //TODO: Not implemented yet
     //delete specific user
-    .delete(adminOnlyApi, function (request, response) {
+    .delete(api.adminOnlyApi, function (request, response) {
         if (request.params.id === '1') {
-            sendRes(response, 500, null, 'Der Administrator kann nicht gelöscht werden.');
+            api.sendJSONResponse(response, 500, null, 'Der Administrator kann nicht gelöscht werden.');
         } else {
             con.query('DELETE FROM users WHERE id = ? LIMIT 1;', [request.params.id], function (queryErr, queryRes) {
                 if (queryErr) {
-                    sendRes(response, 500, null, queryErr);
+                    api.sendJSONResponse(response, 500, null, queryErr);
                 } else {
                     if (queryRes.affectedRows === 1) {
-                        sendRes(response, 200, 'Benutzer wurde erfolgreich gelöscht.');
+                        api.sendJSONResponse(response, 200, 'Benutzer wurde erfolgreich gelöscht.');
                     } else {
-                        sendRes(response, 500, null, 'an error occurred');
+                        api.sendJSONResponse(response, 500, null, 'an error occurred');
                     }
                 }
             });
@@ -98,27 +87,27 @@ router.route('/:id/password')
     //change own password
     .put(function (request, response) {
         if (parseInt(response.locals.user.id, 10) !== parseInt(request.params.id, 10)) {
-            sendRes(response, 422, null, 'Sie können über diese Funktion nur Ihr eigenes Passwort ändern.');
+            api.sendJSONResponse(response, 422, null, 'Sie können über diese Funktion nur Ihr eigenes Passwort ändern.');
         } else if (!isStrongPw(request.body.newPassword)) {
-            sendRes(response, 422, null, 'Das Kennwort entspricht nicht den Anforderungen.');
+            api.sendJSONResponse(response, 422, null, 'Das Kennwort entspricht nicht den Anforderungen.');
         } else {
             con.query('SELECT password FROM users WHERE id = ? LIMIT 1;', [request.params.id], function (queryErr, queryRes) {
                 if (queryErr) {
-                    sendRes(response, 500, null, queryErr);
+                    api.sendJSONResponse(response, 500, null, queryErr);
                 } else if (bcrypt.compareSync(request.body.currentPassword, queryRes[0].password)) {
                     con.query('UPDATE users SET password = ?, lastPwChange = NOW() WHERE id = ? LIMIT 1;', [bcrypt.hashSync(request.body.newPassword), request.params.id], function (query2Err, query2Res) {
                         if (query2Err) {
-                            sendRes(response, 500, null, query2Err);
+                            api.sendJSONResponse(response, 500, null, query2Err);
                         } else {
                             if (query2Res.affectedRows === 1) {
-                                sendRes(response, 200, 'Passwort wurde erfolgreich geändert');
+                                api.sendJSONResponse(response, 200, 'Passwort wurde erfolgreich geändert');
                             } else {
-                                sendRes(response, 500, null, 'an error occurred');
+                                api.sendJSONResponse(response, 500, null, 'an error occurred');
                             }
                         }
                     });
                 } else {
-                    sendRes(response, 422, null, 'Das alte Passwort ist nicht korrekt.');
+                    api.sendJSONResponse(response, 422, null, 'Das alte Passwort ist nicht korrekt.');
                 }
             });
         }

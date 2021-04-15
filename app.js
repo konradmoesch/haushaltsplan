@@ -80,8 +80,8 @@ app.use(function (req, res, next){
 });
 
 app.use('/login', loginRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/expenses', expensesRouter);
+app.use('/api/users', usersRouter); // x - wieso muss ich dafür nicht angemeldet sein?
+app.use('/api/expenses', expensesRouter); // x - bei den anderen auch...
 app.use('/api/earnings', earningsRouter);
 app.use('/api/balance', balanceRouter);
 app.use('/', isAuthenticated, indexRouter);

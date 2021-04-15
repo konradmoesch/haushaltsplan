@@ -5,7 +5,7 @@ require('./helpers/passport')(passport);
 router.get('/', function (req, res) {
     res.render('login', {title: 'Login'});
 });
-router.get('/signup/', function (req, res) {
+router.get('/signup/', function (req, res) { // x - / am ende?
     res.render('signup', {title: 'Nutzererstellung'});
 });
 router.post('/', function (req, res) {

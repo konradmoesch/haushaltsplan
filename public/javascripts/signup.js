@@ -48,5 +48,5 @@ $('#addUserBtn').on('click', function () {
     }
 });
 $('#backBtn').on('click', function () {
-    $(location).attr('href', '/login');
+    $(location).attr('href', '/login'); // x - mal js und mal jquery für reload..
 })

@@ -110,3 +110,4 @@ dist
 /httpRequests/
 .scannerwork/
 config/
+/semantic/

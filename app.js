@@ -80,10 +80,10 @@ app.use(function (req, res, next){
 });
 
 app.use('/login', loginRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/expenses', expensesRouter);
-app.use('/api/earnings', earningsRouter);
-app.use('/api/balance', balanceRouter);
+app.use('/api/users', isAuthenticated, usersRouter);
+app.use('/api/expenses', isAuthenticated, expensesRouter);
+app.use('/api/earnings', isAuthenticated, earningsRouter);
+app.use('/api/balance', isAuthenticated, balanceRouter);
 app.use('/', isAuthenticated, indexRouter);
 
 // catch 404 and forward to error handler

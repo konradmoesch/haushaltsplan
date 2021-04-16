@@ -1,14 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-function ajaxOnly(req, res, next) {
-  if (req.xhr) {
-    return next();
-  }
-  res.sendStatus(403);
-}
-
-function adminOnly(req, res, next) {
+function adminOnly(req, res, next) { // to be used later
   if (req.user.admin === 1) {
     return next();
   }

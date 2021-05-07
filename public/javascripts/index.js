@@ -1,7 +1,7 @@
 $('#sendFeedback').on('click', function () {
     let msg = $('#newFeedbackMsg').val();
     if (msg !== '') {
-        doAJAX('get', '/api/balance/2/test', {message: msg}).done(function (data) {
+        doAJAX('post', '/api/index/' + userID + '/sendMessage', {message: msg}).done(function (data) {
             if(data.response) {
                 showToast('success', null, data.response);
                 $('#newFeedbackMsg').val('');

@@ -14,24 +14,5 @@ router.route('/:id')
             sql.querySQL(response, sqlStmt, queryData);
         }
     });
-router.route('/:id/test')
-    .get(function (req,res) {
-        client.startClient();
-        var testRoomId = "!cJwanTIpgHDDsydkrv:matrix.konradspace.de";
-
-        var content = {
-            "body": "Nachricht von " + res.locals.user.username + ": \n" + req.query.message + "\nGesendet: " + new Date().toLocaleString('de-de'),
-            "msgtype": "m.text"
-        };
-
-        client.sendEvent(testRoomId, "m.room.message", content, "",(matrixError,matrixResponse) => {
-            console.log(matrixResponse);
-            api.sendJSONResponse(res, 200,"Nachricht erfolgreich abgesendet", null);
-            if(matrixError) {
-                api.sendJSONResponse(res, 422,null, matrixError);
-            }
-        });
-        client.stopClient();
-    })
 
 module.exports = router;

@@ -1,3 +1,5 @@
+let chart;
+
 $(document).ready(function () {
     createCalendars();
     setDatesOnPickers();
@@ -67,42 +69,47 @@ function setDatesOnPickers() {
     reloadPagination();
 }
 
-function loadCharts() {
+function loadCharts(reload= false) {
     //Charts
     let ctx = $('#barChart');
-    doAJAX('get', '/api/expenses/' + userID + '/stats/',{date: formatDateYYYYMMDD($('#datepickerStart').val())}).done(function (data) {
-        console.log(data.response);
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Lokal', 'Wiederkehrend', 'Online'],
-                datasets: [{
-                    label: 'Ausgaben',
-                    data: [
-                        data.response[0].sumLocal,
-                        data.response[0].sumRecurring,
-                        data.response[0].sumOnline
-                    ],
-                    backgroundColor: [
-                        'rgb(255, 99, 132)',
-                        'rgb(54, 162, 235)',
-                        'rgb(255, 205, 86)'
-                    ],
-                }]
-            },
-            options: {
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Verteilung',
+
+    if(!reload) {
+        doAJAX('get', '/api/expenses/' + userID + '/stats/', {date: formatDateYYYYMMDD($('#datepickerStart').val())}).done(function (data) {
+            chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Lokal', 'Wiederkehrend', 'Online'],
+                    datasets: [{
+                        label: 'Ausgaben',
+                        data: [
+                            data.response[0].sumLocal,
+                            data.response[0].sumRecurring,
+                            data.response[0].sumOnline
+                        ],
+                        backgroundColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(54, 162, 235)',
+                            'rgb(255, 205, 86)'
+                        ],
+                    }]
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Verteilung',
+                        }
                     }
                 }
-            }
+            });
+        }).fail(function (xhr) {
+            let data = xhr.responseJSON;
+            showToast('error', 'Diagramm konnte nicht geladen werden', data.error);
         });
-    }).fail(function (xhr) {
-        let data = xhr.responseJSON;
-        showToast('error', 'Diagramm konnte nicht geladen werden', data.error);
-    });
+    } else {
+        chart.destroy();
+        loadCharts();
+    }
 }
 
 function loadStats() {

@@ -1,3 +1,5 @@
+let leftChart, centerChart, rightChart;
+
 $(document).ready(function () {
     createCalendars();
     setDatesOnPickers();
@@ -38,70 +40,86 @@ function setDatesOnPickers() {
     $('#datepickerEnd').val(lastDay);
 }
 
-function loadCharts() {
-    let ctx = $('#myChart');
-    doAJAX('get', '/api/earnings/' + userID + '/sum/',{firstdate: formatDateYYYYMMDD($('#datepickerStart').val()), lastdate: formatDateYYYYMMDD($('#datepickerEnd').val()) }).done(function (data) {
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Wiederkehrend', 'Sonstige'],
-                datasets: [{
-                    label: 'Einnahmen',
-                    data: [
-                        data.response[0].sumRecurring,
-                        data.response[0].sumOther
-                    ],
-                    backgroundColor: [
-                        'rgb(255, 99, 132)',
-                        'rgb(255, 205, 86)'
-                    ],
-                }]
-            },
-            options: {
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Verteilung',
-                    }
-                }
-            }
-        });
-    }).fail(function (xhr) {
-        let data = xhr.responseJSON;
-        showToast('error', 'Diagramm konnte nicht geladen werden', data.error);
-    });
+function loadCharts(reload = false) {
+    //Charts
+    const left = $('#leftChart');
+    const center = $('#centerChart');
+    const right = $('#rightChart');
 
-    let ctx2 = $('#myChart2');
-    doAJAX('get', '/api/earnings/' + userID + '/days/',{firstdate: formatDateYYYYMMDD($('#datepickerStart').val()), lastdate: formatDateYYYYMMDD($('#datepickerEnd').val()) }).done(function (data) {
-        new Chart(ctx2, {
-            type: 'doughnut',
-            data: {
-                labels: ['Wiederkehrend', 'Sonstige'],
-                datasets: [{
-                    label: 'Ausgaben',
-                    data: [
-                        data.response[0].sumRecurring,
-                        data.response[0].sumOther
-                    ],
-                    backgroundColor: [
-                        'rgb(255, 99, 132)',
-                        'rgb(255, 205, 86)'
-                    ],
-                }]
-            },
-            options: {
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Verteilung',
+    if(!reload) {
+        doAJAX('get', '/api/earnings/' + userID + '/sum/', {
+            firstdate: formatDateYYYYMMDD($('#datepickerStart').val()),
+            lastdate: formatDateYYYYMMDD($('#datepickerEnd').val())
+        }).done(function (data) {
+            leftChart = new Chart(left, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Wiederkehrend', 'Sonstige'],
+                    datasets: [{
+                        label: 'Einnahmen',
+                        data: [
+                            data.response[0].sumRecurring,
+                            data.response[0].sumOther
+                        ],
+                        backgroundColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(255, 205, 86)'
+                        ],
+                    }]
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Kategorien',
+                        }
                     }
                 }
-            }
+            });
+        }).fail(function (xhr) {
+            let data = xhr.responseJSON;
+            showToast('error', 'Diagramm konnte nicht geladen werden', data.error);
         });
-    }).fail(function (xhr) {
-        let data = xhr.responseJSON;
-        showToast('error', 'Diagramm konnte nicht geladen werden', data.error);
-    });
+
+        doAJAX('get', '/api/earnings/' + userID + '/days/', {
+            firstdate: formatDateYYYYMMDD($('#datepickerStart').val()),
+            lastdate: formatDateYYYYMMDD($('#datepickerEnd').val())
+        }).done(function (data) {
+            centerChart = new Chart(center, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Wiederkehrend', 'Sonstige'],
+                    datasets: [{
+                        label: 'Ausgaben',
+                        data: [
+                            data.response[0].sumRecurring,
+                            data.response[0].sumOther
+                        ],
+                        backgroundColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(255, 205, 86)'
+                        ],
+                    }]
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Tägliche Einnahmen',
+                        }
+                    }
+                }
+            });
+        }).fail(function (xhr) {
+            let data = xhr.responseJSON;
+            showToast('error', 'Diagramm konnte nicht geladen werden', data.error);
+        });
+    } else {
+        leftChart.destroy();
+        centerChart.destroy();
+        //rightChart.destroy();
+        loadCharts();
+    }
 }
 
 function loadDT() {
@@ -163,7 +181,7 @@ function loadDT() {
 $('#datepickerEnd').on('change', function () {
     reloadDT('#table_recurring_earnings');
     reloadDT('#table_other_earnings');
-    loadCharts();
+    loadCharts(true);
 });
 
 //Addbutton
@@ -183,7 +201,7 @@ $('#btnAddEarning').on('click', function () {
             showToast('success', null, 'Diese Einnahme ist erfolgreich hinzugefügt worden.');
             reloadDT('#table_recurring_earnings');
             reloadDT('#table_other_earnings');
-            loadCharts();
+            loadCharts(true);
         }).fail(function (xhr) {
             let data = xhr.responseJSON;
             showToast('error', null, data.error);

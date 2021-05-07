@@ -7,6 +7,7 @@ const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/api/users');
+const apiIndexRouter = require('./routes/api/index');
 const expensesRouter = require('./routes/api/expenses');
 const earningsRouter = require('./routes/api/earnings');
 const balanceRouter = require('./routes/api/balance');
@@ -81,6 +82,7 @@ app.use(function (req, res, next){
 
 app.use('/login', loginRouter);
 app.use('/api/users', isAuthenticated, usersRouter);
+app.use('/api/index', isAuthenticated, apiIndexRouter);
 app.use('/api/expenses', isAuthenticated, expensesRouter);
 app.use('/api/earnings', isAuthenticated, earningsRouter);
 app.use('/api/balance', isAuthenticated, balanceRouter);

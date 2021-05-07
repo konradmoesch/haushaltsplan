@@ -1,6 +1,6 @@
 {
   "name": "haushaltsplan",
-  "version": "0.0.4-3",
+  "version": "0.0.4-4",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
@@ -14,6 +14,7 @@
     "express-session": "^1.17.1",
     "fomantic-ui": "^2.8.7",
     "http-errors": "~1.8.0",
+    "matrix-js-sdk": "^10.0.0",
     "morgan": "~1.10.0",
     "mysql": "^2.18.1",
     "passport": "^0.4.1",

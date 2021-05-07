@@ -1,7 +1,7 @@
 $(document).ready(function () {
     createCalendars();
     setDatesOnPickers();
-    //loadCharts();
+    loadCharts();
     loadStats();
 });
 
@@ -70,7 +70,8 @@ function setDatesOnPickers() {
 function loadCharts() {
     //Charts
     let ctx = $('#barChart');
-    doAJAX('get', '/api/expenses/' + userID + '/sum/',{firstdate: formatDateYYYYMMDD($('#datepickerStart').val()), lastdate: formatDateYYYYMMDD($('#datepickerEnd').val()) }).done(function (data) {
+    doAJAX('get', '/api/expenses/' + userID + '/stats/',{date: formatDateYYYYMMDD($('#datepickerStart').val())}).done(function (data) {
+        console.log(data.response);
         new Chart(ctx, {
             type: 'doughnut',
             data: {

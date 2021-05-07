@@ -11,6 +11,7 @@ router.get('/signup', function (req, res) {
 router.post('/', function (req, res) {
     passport.authenticate('local-login', null ,function (err, user) {
         if (err) {
+            console.error(err);
             res.status(500).send(JSON.stringify({'status': 200, 'error': 'Datenbankfehler. Bitte kontaktieren Sie einen Serveradministrator. ', 'response': false}));
         } else if (user) {
             req.logIn(user, function () {

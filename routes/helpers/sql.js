@@ -9,10 +9,16 @@ class SQL {
          * @param errorCode
          * @returns {string} errorCode with appended description
          */
+        //Not used?
+        //Add errors
         errorCode = errorCode.code;
         switch (errorCode) {
             case 'ER_BAD_FIELD_ERROR':
                 errorCode += ' Fehler in der Datenbankabfrage';
+                break;
+            case 'ER_ACCESS_DENIED_ERROR':
+            case ' ER_WRONG_DB_ERROR':
+                errorCode += ' Datenbankverbindung fehlgeschlagen. Bitte den Serveradministrator kontaktieren';
                 break;
         }
         return errorCode;

@@ -75,18 +75,18 @@ function loadCharts() {
     });
 
     let ctx2 = $('#myChart2');
-    doAJAX('get', '/api/expenses/' + userID + '/days/',{firstdate: formatDateYYYYMMDD($('#datepickerStart').val()), lastdate: formatDateYYYYMMDD($('#datepickerEnd').val()) }).done(function (data) {
+    doAJAX('get', '/api/expenses/' + userID + '/groupname/',{firstdate: formatDateYYYYMMDD($('#datepickerStart').val()), lastdate: formatDateYYYYMMDD($('#datepickerEnd').val()) }).done(function (data) {
         new Chart(ctx2, {
             type: 'doughnut',
             data: {
-                labels: ['Lokal', 'Wiederkehrend', 'Online'],
+                labels: data.response.map(obj => {
+                    return obj.name;
+                }),
                 datasets: [{
                     label: 'Ausgaben',
-                    data: [
-                        data.response[0].sumLocal,
-                        data.response[0].sumRecurring,
-                        data.response[0].sumOnline
-                    ],
+                    data: data.response.map(obj => {
+                        return obj.value;
+                    }),
                     backgroundColor: [
                         'rgb(255, 99, 132)',
                         'rgb(54, 162, 235)',
@@ -195,7 +195,7 @@ function loadDT() {
 
 //Reload on Change
 $('#datepickerEnd').on('change', function () {
-    reloadDT('#table_local_expenses');
+    reloadDT('#table_store_expenses');
     reloadDT('#table_recurring_expenses');
     reloadDT('#table_online_expenses');
     loadCharts();
@@ -218,7 +218,7 @@ $('#btnAddExpense').on('click', function () {
             value
         }).done(function (data) {
             showToast('success', null, 'Diese Ausgabe ist erfolgreich hinzugefügt worden.');
-            reloadDT('#table_local_expenses');
+            reloadDT('#table_store_expenses');
             reloadDT('#table_recurring_expenses');
             reloadDT('#table_online_expenses');
             loadCharts();
